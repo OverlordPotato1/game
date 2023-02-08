@@ -4,7 +4,6 @@ import math
 import definitions
 import os
 import subprocess
-import simple_pid
 
 pygame.init()
 
