@@ -6,3 +6,4 @@ You are an adventurer that travels into the dungeon as commanded by your choice 
 
 ## Sources:
 Fantasy Pixel Art Asset Pack (https://teamgriffin.itch.io/molly-asset-pack) by teamgriffin
+Idylwild's Armory (https://idylwild.itch.io/idylwilds-armory) by Idylwild
