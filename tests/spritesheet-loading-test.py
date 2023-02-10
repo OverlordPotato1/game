@@ -1,25 +1,17 @@
 import pygame
+from spritesheet import spritesheet
 
-def load_spritesheet(file_name, sprite_size):
-    sprite_sheet = pygame.image.load(file_name).convert_alpha()
-    sprites = []
-
-    for y in range(0, sprite_sheet.get_height(), sprite_size[1]):
-        for x in range(0, sprite_sheet.get_width(), sprite_size[0]):
-            rect = pygame.Rect(x, y, sprite_size[0], sprite_size[1])
-            sprite = sprite_sheet.subsurface(rect)
-            sprites.append(sprite)
-
-    return sprites
 
 # Initialize Pygame
 pygame.init()
 
+
 # Set up the display
 screen = pygame.display.set_mode((640, 480), pygame.RESIZABLE)
 
-# Load the sprite sheet
-sprites = load_spritesheet("D:\game but better\game\Images\Downloaded\Fantasy Pixel Art Asset Pack\Knight-Idle-Sheet.png", (64, 64))
+sprites = spritesheet("D:\game but better\game\Images\Downloaded\Fantasy Pixel Art Asset Pack\Knight-Walk-Sheet.png", (64, 64))
+sprites = sprites.returnSprites("list")
+print(sprites)
 
 # Start the animation loop
 running = True
@@ -41,9 +33,9 @@ while running:
     # Advance to the next sprite
     current_sprite = (current_sprite + 1) % len(sprites)
 
-    # Cap the framerate at 20 FPS
+    # Cap the framerate at 10 FPS
     clock = pygame.time.Clock()
-    clock.tick(20)
+    clock.tick(10)
 
 # Clean up
 pygame.quit()

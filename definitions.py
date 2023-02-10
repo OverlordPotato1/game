@@ -1,4 +1,5 @@
 import pygame
+import os
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -31,4 +32,9 @@ LIGHT_BLUE = (0, 0, 255)
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-tile_size = 32
+TILE_SIZE = 32
+
+FILEPATH = str(os.path.dirname(os.path.abspath(__file__)))
+
+LIST = "list"
+DICT = "dict"
