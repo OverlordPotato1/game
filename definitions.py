@@ -1,3 +1,6 @@
+'''
+File containing all definitions for the game that are used in multiple files
+'''
 import pygame
 import os
 

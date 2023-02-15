@@ -1,6 +1,10 @@
+'''
+Script containing the animation class and functions for scrolling the screen
+'''
 import pygame
 import os
 import asyncio
+from player import player
 
 class animation:
     def __init__(self, screen, walking, attack, death, idle):
@@ -8,6 +12,7 @@ class animation:
         Constructor for the animation class
         
         Args:
+            screen: the screen to draw the animation on
             walking: a list of sprites for the walking animation
             attack: a list of sprites for the attack animation
             death: a list of sprites for the death animation
@@ -155,3 +160,67 @@ class animation:
             self.active = asyncio.create_task(self.__idle())
             
         return
+
+async def __player_move(self, direction):
+    '''
+    Moves the player in a direction
+    
+    Args:
+        direction: a tuple with the x and y direction to move in
+        
+    Returns:
+        None
+        
+    Raises:
+        None
+        
+    Example:
+        __player_move((0, 1))
+    '''
+
+    player.move(direction)
+
+async def __world_move(self, direction):
+    '''
+    Moves the world in a direction
+    
+    Args:
+        direction: a tuple with the x and y direction to move in
+        
+    Returns:
+        None
+        
+    Raises:
+        None
+        
+    Example:
+        __world_move((0, 1))
+    '''
+
+    # delay the world movement so that the player will move away
+    await asyncio.sleep(0.5)
+
+    ##################################################################### this will need actual code when the game exists
+    
+
+def scrolling(self, direction):
+    '''
+    Scrolls the screen in a direction
+    Delays the camera movement so that the player will move away using asyncio
+    
+    Args:
+        direction: a tuple with the x and y direction to scroll in
+
+    Returns:    
+        None
+
+    Raises:
+        None
+
+    Example:
+        scrolling((0, 1))
+    '''
+
+    # call __world_move and __player_move without waiting for them to finish
+    asyncio.create_task(self.__world_move(direction))
+    asyncio.create_task(self.__player_move(direction))
