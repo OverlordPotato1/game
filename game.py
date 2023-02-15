@@ -27,6 +27,17 @@ while True:
         definitions.SCREEN_WIDTH = event.w
         definitions.SCREEN_HEIGHT = event.h
 
+    # if wasd or arrow keys are pressed
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_w or event.key == pygame.K_UP:
+            pass
+        if event.key == pygame.K_a or event.key == pygame.K_LEFT:
+            pass
+        if event.key == pygame.K_s or event.key == pygame.K_DOWN:
+            pass
+        if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+            pass
+
     # Clear the screen and set the screen background
     screen.fill(definitions.BLACK)
 

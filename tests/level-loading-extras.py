@@ -20,7 +20,7 @@ class proximityBasedTiles:
         self.scan = []
 
     def _scanNearbyTiles(self, tileslist, coords):
-        '''This function is a dependency of the fire() function. It scans the tiles around the target and returns all the tiles that match the searchFor table.
+        '''This function is a dependency of the go() function. It scans the tiles around the target and returns all the tiles that match the searchFor table.
         \nThis function is not to be called directly.
         '''
         nearbyTiles = []
@@ -68,7 +68,7 @@ class proximityBasedTiles:
         print (nearbyTiles, coords)
         return nearbyTiles
     
-    def fire(self, tileslist, coords):
+    def go(self, tileslist, coords):
         '''The main function to scan the proximity of the tile and change it to the correct texture.'''
         # ensure that all the self. variables are set
         if self.searchFor == [] or self.toReplace == "" or self.normal == "" or self.edge == "" or self.corner == "" or self.reverseCorner == "" or self.dualReverseCorner == "" or self.bridge == "" or self.point == "" or self.borderingConditions == []:
