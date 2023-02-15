@@ -22,8 +22,13 @@ def verifyFolder(folder):
                     hash.update(chunk)
     print(hash.hexdigest())
     # get the expected hash from github https://github.com/OverlordPotato1/game in the file hash.json
-    expectedHash = urllib.request.urlopen("https://raw.githubusercontent.com/OverlordPotato1/game/master/hash.json").read().decode("utf-8")
-    expectedHash = expectedHash[expectedHash.find(folder)+len(folder)+3:expectedHash.find(folder)+len(folder)+67]
+    expectedHash = urllib.request.urlopen("https://raw.githubusercontent.com/OverlordPotato1/game/main/hash.json?token=GHSAT0AAAAAAB6QVDEKPYRUOGMIN5STILDIY7M5RWQ").read().decode("utf-8")
     print(expectedHash)
+    if (expectedHash != hash):
+        print("Hash doesn't match")
+        return False
+    else:
+        print("Hash matches")
+        return True
 
-verifyFolder(baseFolder)
+verifyFolder(baseFolder+"/Images/")
