@@ -21,6 +21,8 @@ world_width = 1000
 world_height = 800
 world = pygame.Surface((world_width, world_height))
 
+print(world)
+
 game_element = pygame.Surface((32, 32))
 game_element.fill((255, 0, 0))
 world.blit(game_element, (0, 0))

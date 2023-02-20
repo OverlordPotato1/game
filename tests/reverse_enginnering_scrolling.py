@@ -15,6 +15,7 @@ world_width = screen_width+400
 world_height = screen_height+400
 world = pygame.Surface((world_width, world_height))
 
+
 game_element = pygame.Surface((32, 32))
 game_element.fill((255, 0, 0))
 
