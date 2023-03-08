@@ -17,7 +17,20 @@ screen = pygame.display.set_mode((definitions.SCREEN_WIDTH, definitions.SCREEN_H
 # center the window
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
+world_width = 1000
+world_height = 800
+world = pygame.Surface((world_width, world_height))
 
+print(world)
+
+game_element = pygame.Surface((32, 32))
+game_element.fill((255, 0, 0))
+world.blit(game_element, (0, 0))
+
+screen_view = pygame.Surface((definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT))
+
+scroll_x = 0
+scroll_y = 0
 while True:
     event = pygame.event.poll()
     if event.type == pygame.QUIT:
@@ -26,6 +39,12 @@ while True:
     if event.type == pygame.VIDEORESIZE:
         definitions.SCREEN_WIDTH = event.w
         definitions.SCREEN_HEIGHT = event.h
+
+    scroll_x += 1
+    scroll_y += 1
+    world.scroll(-scroll_x, -scroll_y)
+
+    
 
     # if wasd or arrow keys are pressed
     if event.type == pygame.KEYDOWN:
@@ -41,11 +60,12 @@ while True:
     # Clear the screen and set the screen background
     screen.fill(definitions.BLACK)
 
-    # Draw a solid blue circle in the center
-    pygame.draw.circle(screen, definitions.BLUE, (definitions.SCREEN_WIDTH // 2, definitions.SCREEN_HEIGHT // 2), 20)
+    # draw a blue circle at position (500, 500) with a radius of 20
+    pygame.draw.circle(screen, definitions.BLUE, (500, 500), 20)
 
+    screen_view.blit(world, (0, 0), (scroll_x, scroll_y, definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT))
 
-    # Go ahead and update the screen with what we've drawn.
+    screen.blit(screen_view, (0, 0))
     pygame.display.flip()
 
 # Be IDLE friendly
