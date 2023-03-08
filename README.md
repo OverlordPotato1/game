@@ -7,3 +7,4 @@ You are an adventurer that travels into the dungeon as commanded by your choice 
 ## Sources:
 Fantasy Pixel Art Asset Pack (https://teamgriffin.itch.io/molly-asset-pack) by teamgriffin
 Idylwild's Armory (https://idylwild.itch.io/idylwilds-armory) by Idylwild
+Skeleton Animated Sprite (walk and attack) (https://jumelord.itch.io/skeleton-animated-sprite-walk-and-attack) by jumelord
