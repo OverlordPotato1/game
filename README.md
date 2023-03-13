@@ -8,3 +8,5 @@ You are an adventurer that travels into the dungeon as commanded by your choice 
 Fantasy Pixel Art Asset Pack (https://teamgriffin.itch.io/molly-asset-pack) by teamgriffin
 Idylwild's Armory (https://idylwild.itch.io/idylwilds-armory) by Idylwild
 Skeleton Animated Sprite (walk and attack) (https://jumelord.itch.io/skeleton-animated-sprite-walk-and-attack) by jumelord
+Free Enemy Sprite Sheets Pixel Art {https://free-game-assets.itch.io/free-enemy-sprite-sheets-pixel-art} by Free Game Assets (GUI, Sprite, Tilesets)
+Starter Tiles - Platformer{https://ninjikin.itch.io/starter-tiles} by SciGho
