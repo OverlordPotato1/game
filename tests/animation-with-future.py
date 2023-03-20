@@ -1,9 +1,6 @@
 import pygame
-import random
-import math
 import definitions
 import os
-import subprocess
 import spritesheet
 from keys import Key
 
@@ -22,17 +19,17 @@ world_width = 1000
 world_height = 800
 world = pygame.Surface((world_width, world_height), pygame.SRCALPHA)
 
-player = pygame.Surface((128, 128), pygame.SRCALPHA)
+player = pygame.Surface((512, 512), pygame.SRCALPHA)
 
 player_width = 128
 player_height = player_width
 
-leftPlayerSprites = spritesheet.spritesheet("Knight-Walk-Sheet-sword-right.png", (64, 64))
-leftPlayerList = leftPlayerSprites.returnSprites("list")
+rightPlayerSprites = spritesheet.spritesheet("Knight-Walk-Sheet-sword-right.png", (64, 64))
+activeAnimationList = rightPlayerSprites.returnSprites("list")
 
-for pos, image in enumerate(leftPlayerList):
+for pos, image in enumerate(activeAnimationList):
     image = pygame.transform.scale(image, (player_width, player_height))
-    leftPlayerList[pos] = image
+    activeAnimationList[pos] = image
 
 screen_view = pygame.Surface((definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT))
 
@@ -70,24 +67,24 @@ while doTheThing:
             print(sw, sh)
 
         # if wasd or arrow keys are pressed
-        up.fetch(event)
-        down.fetch(event)
-        left.fetch(event)
-        right.fetch(event)
+        up(event)
+        down(event)
+        left(event)
+        right(event)
 
     ticksSince += 1
 
     if ticksSince >= 20:
         ticksSince = 0
         frame += 1
-        if frame > len(leftPlayerList) - 1:
+        if frame > len(activeAnimationList) - 1:
             frame = 0
 
     screen.fill((100, 0, 140, 0))
     world.fill((0, 0, 0, 0))
 
     player.fill((0, 0, 0, 0))
-    player.blit(leftPlayerList[frame], (0, 0))
+    player.blit(activeAnimationList[frame], (0, 0))
     world.blit(player, (0, 0))
 
     # Update the scrolling position based on the key flags
