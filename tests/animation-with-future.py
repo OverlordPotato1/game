@@ -5,6 +5,7 @@ import definitions
 import os
 import subprocess
 import spritesheet
+from keys import Key
 
 pygame.init()
 
@@ -52,6 +53,11 @@ sh = definitions.SCREEN_HEIGHT
 frame = 0
 ticksSince = 0
 
+up = Key([pygame.K_UP, pygame.K_w])
+down = Key([pygame.K_DOWN, pygame.K_s])
+left = Key([pygame.K_LEFT, pygame.K_a])
+right = Key([pygame.K_RIGHT, pygame.K_d])
+
 doTheThing = True
 while doTheThing:
     for event in pygame.event.get():
@@ -64,31 +70,17 @@ while doTheThing:
             print(sw, sh)
 
         # if wasd or arrow keys are pressed
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP or event.key == pygame.K_w:
-                key_up_pressed = True
-            elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-                key_down_pressed = True
-            elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                key_left_pressed = True
-            elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                key_right_pressed = True
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_UP or event.key == pygame.K_w:
-                key_up_pressed = False
-            elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-                key_down_pressed = False
-            elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                key_left_pressed = False
-            elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                key_right_pressed = False
+        up.fetch(event)
+        down.fetch(event)
+        left.fetch(event)
+        right.fetch(event)
 
     ticksSince += 1
 
     if ticksSince >= 20:
         ticksSince = 0
         frame += 1
-        if frame > len(leftPlayerList)-1:
+        if frame > len(leftPlayerList) - 1:
             frame = 0
 
     screen.fill((100, 0, 140, 0))
@@ -98,22 +90,20 @@ while doTheThing:
     player.blit(leftPlayerList[frame], (0, 0))
     world.blit(player, (0, 0))
 
-
-
-# Update the scrolling position based on the key flags
-    if key_up_pressed:
+    # Update the scrolling position based on the key flags
+    if up:
         scroll_y += 1
-        if key_left_pressed:
+        if left:
             # run the left walk animation
             pass
         else:
             # run the right walk animation
             pass
-    if key_down_pressed:
+    if down:
         scroll_y -= 1
-    if key_left_pressed:
+    if left:
         scroll_x += 1
-    if key_right_pressed:
+    if right:
         scroll_x -= 1
 
     # Clear the screen and set the screen background
@@ -131,4 +121,3 @@ while doTheThing:
 
 # Be IDLE friendly
 pygame.quit()
-
