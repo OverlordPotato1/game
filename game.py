@@ -79,24 +79,26 @@ while doTheThing:
     world.blit(player, (0, 0))
 
     # Update the scrolling position based on the key flags
-    if up:
+    if up and not down:
         scroll_y += 1
         succeed += 1
-    if down:
+    if down and not up:
         scroll_y -= 1
         succeed += 1
-    if left:
+    if left and not right:
         scroll_x += 1
         if lastDirection == 0:
             playerAnim.switch_sheet(leftSwordWalk)
             lastDirection = 1
         succeed += 1
-    if right:
+    if right and not left:
         scroll_x -= 1
         if lastDirection == 1:
             playerAnim.switch_sheet(rightSwordWalk)
             lastDirection = 0
         succeed += 1
+    if succeed == 0:
+        playerAnim.ticks_since = 0
 
     screen_view.blit(world, (0, 0), (scroll_x, scroll_y, sw, sh))
 
