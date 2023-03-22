@@ -1,40 +1,38 @@
 import pygame
-import random
-import math
 import definitions
 import os
-import subprocess
+
+import func
+from classes.spritesheet import spritesheet
+from classes.keys import Key
+from classes.animator import Animator
+from func import resize_sprites
 
 pygame.init()
 
-# get the screen size
-definitions.REAL_SCREEN_WIDTH = pygame.display.Info().current_w
-definitions.REAL_SCREEN_HEIGHT = pygame.display.Info().current_h
-
-
-# open the window in borderless fullscreen
 screen = pygame.display.set_mode((definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT), pygame.RESIZABLE)
-# center the window
-os.environ['SDL_VIDEO_CENTERED'] = '1'
+os.environ['SDL_VIDEO_CENTERED'] = '1'  # center the window
 
 world_width = 1000
 world_height = 800
-world = pygame.Surface((world_width, world_height), pygame.SRCALPHA)
+world = pygame.Surface((world_width, world_height),
+                       pygame.SRCALPHA)  # pygame.SRCALPHA is required to have a transparent background on pngs
 
-print(world)
+player = pygame.Surface((512, 512), pygame.SRCALPHA)  # define the player surface
 
-player = pygame.Surface((32, 32))
-player.fill((255, 0, 0))
-world.blit(player, (0, 0))
+player_width = 128
+player_height = player_width  # set the width and height that the sprites will be expanded to
+
+rightPlayerSprites = spritesheet("Images/Knight-Walk-Sheet-sword-right.png", (64, 64))  # load the spritesheet and divide it into 64 x 64 squares
+rightPlayerSprites.resize_sprites((player_width, player_height))
+activeAnimationList = rightPlayerSprites.returnSprites("list")  # return the spritesheet as a list
+
+playerAnim = Animator(activeAnimationList)  # resize the sprites and pass them to the Animator constructor as a spritesheet
 
 screen_view = pygame.Surface((definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT))
 
-key_up_pressed = False
-key_down_pressed = False
-key_left_pressed = False
-key_right_pressed = False
-
 clock = pygame.time.Clock()
+
 fps = 180
 
 scroll_x = 0
@@ -43,58 +41,41 @@ scroll_y = 0
 sw = definitions.SCREEN_WIDTH
 sh = definitions.SCREEN_HEIGHT
 
+up = Key([pygame.K_UP, pygame.K_w])
+down = Key([pygame.K_DOWN, pygame.K_s])
+left = Key([pygame.K_LEFT, pygame.K_a])
+right = Key([pygame.K_RIGHT, pygame.K_d])
+
 doTheThing = True
 while doTheThing:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             doTheThing = False
-        # if the window is resized, update the definitions
-        if event.type == pygame.VIDEORESIZE:
-            sw = event.w
-            sh = event.h
-            print(sw, sh)
+        # handle window resizes
+        sw, sh = func.handle_resize(event, sw, sh)
 
-        # if wasd or arrow keys are pressed
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                key_up_pressed = True
-            elif event.key == pygame.K_DOWN:
-                key_down_pressed = True
-            elif event.key == pygame.K_LEFT:
-                key_left_pressed = True
-            elif event.key == pygame.K_RIGHT:
-                key_right_pressed = True
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_UP:
-                key_up_pressed = False
-            elif event.key == pygame.K_DOWN:
-                key_down_pressed = False
-            elif event.key == pygame.K_LEFT:
-                key_left_pressed = False
-            elif event.key == pygame.K_RIGHT:
-                key_right_pressed = False
+        # update the states of the up down left right things
+        up(event)
+        down(event)
+        left(event)
+        right(event)
 
-# Update the scrolling position based on the key flags
-    if key_up_pressed:
+    screen.fill((100, 0, 140, 0))
+    world.fill((0, 0, 0, 0))
+
+    player.fill((0, 0, 0, 0))
+    player.blit(playerAnim(), (0, 0))
+    world.blit(player, (0, 0))
+
+    # Update the scrolling position based on the key flags
+    if up:
         scroll_y += 1
-        if key_left_pressed:
-            # run the left walk animation
-            pass
-        else:
-            # run the right walk animation
-            pass
-    if key_down_pressed:
+    if down:
         scroll_y -= 1
-    if key_left_pressed:
+    if left:
         scroll_x += 1
-    if key_right_pressed:
+    if right:
         scroll_x -= 1
-
-    # Clear the screen and set the screen background
-    # screen.fill((180, 0, 180))
-
-    # # draw a blue circle at position (500, 500) with a radius of 20
-    # pygame.draw.circle(screen, definitions.BLUE, (500, 500), 20)
 
     screen_view.blit(world, (0, 0), (scroll_x, scroll_y, sw, sh))
 
@@ -105,4 +86,3 @@ while doTheThing:
 
 # Be IDLE friendly
 pygame.quit()
-
