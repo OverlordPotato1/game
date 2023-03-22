@@ -24,8 +24,16 @@ player_width = 128
 player_height = player_width  # set the width and height that the sprites will be expanded to
 
 rightPlayerSprites = spritesheet("Images/Knight-Walk-Sheet-sword-right.png", (64, 64))  # load the spritesheet and divide it into 64 x 64 squares
+rightPlayerSprites.separate_spritesheet()
 rightPlayerSprites.resize_sprites((player_width, player_height))
-activeAnimationList = rightPlayerSprites.returnSprites("list")  # return the spritesheet as a list
+rightSwordWalk = rightPlayerSprites.returnSprites("list")  # return the spritesheet as a list
+
+leftPlayerSprites = spritesheet("Images/Knight-Walk-Sheet-sword-left.png", (64, 64))
+leftPlayerSprites.separate_spritesheet()
+leftPlayerSprites.resize_sprites((player_width, player_height))
+leftSwordWalk = leftPlayerSprites.returnSprites("list")
+
+activeAnimationList = rightSwordWalk
 
 playerAnim = Animator(activeAnimationList)  # resize the sprites and pass them to the Animator constructor as a spritesheet
 
@@ -46,8 +54,11 @@ down = Key([pygame.K_DOWN, pygame.K_s])
 left = Key([pygame.K_LEFT, pygame.K_a])
 right = Key([pygame.K_RIGHT, pygame.K_d])
 
+lastDirection = 0
+
 doTheThing = True
 while doTheThing:
+    succeed = 0
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             doTheThing = False
@@ -70,12 +81,22 @@ while doTheThing:
     # Update the scrolling position based on the key flags
     if up:
         scroll_y += 1
+        succeed += 1
     if down:
         scroll_y -= 1
+        succeed += 1
     if left:
         scroll_x += 1
+        if lastDirection == 0:
+            playerAnim.switch_sheet(leftSwordWalk)
+            lastDirection = 1
+        succeed += 1
     if right:
         scroll_x -= 1
+        if lastDirection == 1:
+            playerAnim.switch_sheet(rightSwordWalk)
+            lastDirection = 0
+        succeed += 1
 
     screen_view.blit(world, (0, 0), (scroll_x, scroll_y, sw, sh))
 
@@ -84,5 +105,4 @@ while doTheThing:
 
     clock.tick(fps)
 
-# Be IDLE friendly
 pygame.quit()

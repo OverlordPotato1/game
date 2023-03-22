@@ -2,7 +2,8 @@ import pygame
 
 
 class Animator:
-    def __init__(self, spritesheet, cycles_per_frame = 20):
+    def __init__(self, spritesheet, cycles_per_frame=20):
+        self.pause = False
         if isinstance(spritesheet, str):
             raise TypeError
         self.sprites = spritesheet
@@ -11,8 +12,7 @@ class Animator:
         self.ticks_since = 0
 
     def switch_sheet(self, new_sheet):
-        if isinstance(new_sheet, str):
-            raise TypeError
+        del self.sprites
         self.sprites = new_sheet
         self.frame = 0
         self.ticks_since = 0

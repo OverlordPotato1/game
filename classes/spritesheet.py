@@ -57,6 +57,11 @@ class spritesheet:
 
         self.sprites = sprites
 
+    def resize_sprites(self, new_size):
+        width, height = new_size
+        for pos, image in enumerate(self.sprites):
+            self.sprites[pos] = pygame.transform.scale(image, (width, height))
+
     def returnSprites(self, returnType="list", dictionaryNames=None):
         """
         Returns the spritesheet as a list of sprites or a dictionary of sprites.
@@ -76,7 +81,7 @@ class spritesheet:
             sprites = spritesheet.returnSprites("list")
             sprites = spritesheet.returnSprites("dict", ["sprite1", "sprite2", "sprite3"])
         """
-        self.separate_spritesheet()
+        # self.separate_spritesheet()
         # determine if the spritesheet contains multiple rows and set isMultipleRows accordingly
         if self.sprite_width * len(self.sprites) > self.file_width:
             isMultipleRows = True
@@ -106,10 +111,4 @@ class spritesheet:
         else:
             raise Exception("returnType must be either \"list\" or \"dict\"")
 
-    def resize_sprites(self, new_size):
-        width, height = new_size
-        spritesheet = self.sprites
-        for pos, image in enumerate(spritesheet):
-            image = pygame.transform.scale(image, (width, height))
-            spritesheet[pos] = image
-        self.sprites = spritesheet
+
