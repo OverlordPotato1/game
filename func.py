@@ -24,3 +24,10 @@ def easy_spritesheet(file, sprite_dimensions, resize_dimensions):
     sprites.separate_spritesheet()
     sprites.resize_sprites(resize_dimensions)
     return sprites.return_sprites()
+
+
+def flip_spritesheet(spritesheet):
+    for pos, image in enumerate(spritesheet):
+        image = pygame.transform.flip(image, True, False)
+        spritesheet[pos] = image
+    return spritesheet

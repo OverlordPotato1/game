@@ -19,7 +19,7 @@ world_width = 1000
 world_height = 800
 world = pygame.Surface((world_width, world_height), pygame.SRCALPHA)  # pygame.SRCALPHA is required to have a transparent background on pngs
 
-player = pygame.Surface((512, 512), pygame.SRCALPHA)  # define the player surface
+player = pygame.Surface((512, 512), pygame.SRCALPHA)  # define the player surface, pygame.SRCALPHA is still required because the surface needs to be transparent
 
 player_height = player_width = 128
 
@@ -27,16 +27,19 @@ rightSwordWalk = func.easy_spritesheet("Images/Knight-Walk-Sheet-sword-right.png
 
 leftSwordWalk = func.easy_spritesheet("Images/Knight-Walk-Sheet-sword-left.png", (64, 64), (player_width, player_height))
 
+idle = func.easy_spritesheet("Images/Downloaded/Fantasy Pixel Art Asset Pack/Knight-Idle-Sheet.png", (64, 64), (player_width*0.9, player_height*0.9))
+
+
 activeAnimationList = rightSwordWalk
 
-playerAnim = Animator(activeAnimationList)  # resize the sprites and pass them to the Animator constructor as a spritesheet
-playerWalk = Movement(playerAnim, leftSwordWalk, rightSwordWalk, 1.3)
+playerAnim = Animator(activeAnimationList, 9)  # resize the sprites and pass them to the Animator constructor as a spritesheet
+playerWalk = Movement(playerAnim, leftSwordWalk, rightSwordWalk, idle, 3.6)
 
 screen_view = pygame.Surface((definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT))
 
 clock = pygame.time.Clock()
 
-fps = 180
+fps = 60
 
 scroll_x = scroll_y = 0
 
