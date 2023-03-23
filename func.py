@@ -1,4 +1,5 @@
 import pygame
+from classes.spritesheet import Spritesheet as spsh
 
 
 def resize_sprites(spritesheet, dimensions):
@@ -16,3 +17,10 @@ def handle_resize(event, sw, sh):
         return sw, sh
     else:
         return sw, sh
+
+
+def easy_spritesheet(file, sprite_dimensions, resize_dimensions):
+    sprites = spsh(file, sprite_dimensions)
+    sprites.separate_spritesheet()
+    sprites.resize_sprites(resize_dimensions)
+    return sprites.return_sprites()

@@ -1,6 +1,6 @@
-'''
+"""
 File containing all definitions for the game that are used in multiple files
-'''
+"""
 import pygame
 import os
 
@@ -27,8 +27,6 @@ DARK_PURPLE = (128, 0, 128)
 DARK_CYAN = (0, 128, 128)
 DARK_BROWN = (128, 64, 0)
 DARK_PINK = (255, 20, 147)
-DARK_GREY = (64, 64, 64)
-LIGHT_GREY = (192, 192, 192)
 LIGHT_GREEN = (0, 255, 0)
 LIGHT_BLUE = (0, 0, 255)
 
@@ -41,3 +39,8 @@ FILEPATH = str(os.path.dirname(os.path.abspath(__file__)))
 
 LIST = "list"
 DICT = "dict"
+
+UP_KEYS = [pygame.K_UP, pygame.K_w]
+DOWN_KEYS = [pygame.K_DOWN, pygame.K_s]
+LEFT_KEYS = [pygame.K_LEFT, pygame.K_a]
+RIGHT_KEYS = [pygame.K_RIGHT, pygame.K_d]
