@@ -54,6 +54,8 @@ while doTheThing:
             doTheThing = False
         # handle window resizes
         sw, sh = func.handle_resize(event, sw, sh)
+        if event.type == pygame.WINDOWRESIZED:
+            playerWalk.new_sprites(func.resize_sprites(leftSwordWalk, (sw/12, sw/12)), func.resize_sprites(rightSwordWalk, (sw/12, sw/12)), func.resize_sprites(idle, (sw/12, sw/12)))
 
         # update the states of the up down left right things
         up(event)

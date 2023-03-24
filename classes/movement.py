@@ -23,7 +23,7 @@ class Movement:
                 self.last_direction = 1
             elif self.last_direction == -1:
                 self.animation_class.switch_sheet(self.rightWalk)
-                self.last_direction = 2
+                self.last_direction = 0
         if down and not up:
             scroll_y -= ms
             succeed += 1
@@ -32,7 +32,7 @@ class Movement:
                 self.last_direction = 1
             elif self.last_direction == -1:
                 self.animation_class.switch_sheet(self.rightWalk)
-                self.last_direction = 2
+                self.last_direction = 0
         if left and not right:
             scroll_x += ms
             if self.last_direction != 1:
@@ -47,15 +47,20 @@ class Movement:
             succeed += 1
         if succeed == 0:
             if self.last_direction == 1:
-                self.animation_class.switch_sheet(self.flippedIdle)
-                self.last_direction = -2
-                print("set flipped_idle")
-            elif self.last_direction == 0:
                 self.animation_class.switch_sheet(self.idle)
+                self.last_direction = -2
+            elif self.last_direction == 0:
+                self.animation_class.switch_sheet(self.flippedIdle)
                 self.last_direction = -1
-                print("set idle")
 
         return scroll_x, scroll_y
+
+
+    def new_sprites(self, left_walk, right_walk, idle):
+        self.leftWalk = left_walk
+        self.rightWalk = right_walk
+        self.idle = idle
+        self.flippedIdle = functions.flip_spritesheet(idle)
 
 
 """
