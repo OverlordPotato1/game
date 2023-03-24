@@ -35,6 +35,8 @@ activeAnimationList = rightSwordWalk
 playerAnim = Animator(activeAnimationList, 9)  # resize the sprites and pass them to the Animator constructor as a spritesheet
 playerWalk = Movement(playerAnim, leftSwordWalk, rightSwordWalk, idle, 3.6)
 
+
+
 screen_view = pygame.Surface((definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT))
 
 clock = pygame.time.Clock()
@@ -44,6 +46,8 @@ fps = 60
 scroll_x = scroll_y = 0
 
 sw, sh = create_base_window_size()
+
+playerWalk.new_sprites(func.resize_sprites(leftSwordWalk, (sw/8, sw/8)), func.resize_sprites(rightSwordWalk, (sw/8, sw/8)), func.resize_sprites(idle, (sw/8, sw/8)))
 
 up, down, left, right = create_movement_objects()
 
@@ -55,7 +59,7 @@ while doTheThing:
         # handle window resizes
         sw, sh = func.handle_resize(event, sw, sh)
         if event.type == pygame.WINDOWRESIZED:
-            playerWalk.new_sprites(func.resize_sprites(leftSwordWalk, (sw/12, sw/12)), func.resize_sprites(rightSwordWalk, (sw/12, sw/12)), func.resize_sprites(idle, (sw/12, sw/12)))
+            playerWalk.new_sprites(func.resize_sprites(leftSwordWalk, (sw/8, sw/8)), func.resize_sprites(rightSwordWalk, (sw/8, sw/8)), func.resize_sprites(idle, (sw/8, sw/8)))
 
         # update the states of the up down left right things
         up(event)

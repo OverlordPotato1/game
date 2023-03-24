@@ -61,6 +61,17 @@ class Movement:
         self.rightWalk = right_walk
         self.idle = idle
         self.flippedIdle = functions.flip_spritesheet(idle)
+        if self.last_direction == 1:
+            self.animation_class.switch_sheet(self.idle)
+            self.last_direction = -2
+        elif self.last_direction == 0:
+            self.animation_class.switch_sheet(self.flippedIdle)
+            self.last_direction = -1
+        elif self.last_direction == -1:
+            self.animation_class.switch_sheet(self.flippedIdle)
+        elif self.last_direction == -2:
+            self.animation_class.switch_sheet(self.idle)
+
 
 
 """
