@@ -1,73 +1,121 @@
 import pygame
-import random
-import math
 import definitions
 import os
-import subprocess
+
+import func
+from classes.spritesheet import Spritesheet
+from classes.keys import Key
+from classes.animator import Animator
+from func import resize_sprites
+from classes.movement import Movement
+from this_is_kinda_stupid_now import *
 
 pygame.init()
 
-# get the screen size
-definitions.REAL_SCREEN_WIDTH = pygame.display.Info().current_w
-definitions.REAL_SCREEN_HEIGHT = pygame.display.Info().current_h
-
-
-# open the window in borderless fullscreen
 screen = pygame.display.set_mode((definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT), pygame.RESIZABLE)
-# center the window
-os.environ['SDL_VIDEO_CENTERED'] = '1'
+os.environ['SDL_VIDEO_CENTERED'] = '1'  # center the window
 
 world_width = 1000
 world_height = 800
-world = pygame.Surface((world_width, world_height))
+world = pygame.Surface((world_width, world_height), pygame.SRCALPHA)  # pygame.SRCALPHA is required to have a transparent background on pngs
 
-print(world)
+player = pygame.Surface((512, 512), pygame.SRCALPHA)  # define the player surface, pygame.SRCALPHA is still required because the surface needs to be transparent
 
-game_element = pygame.Surface((32, 32))
-game_element.fill((255, 0, 0))
-world.blit(game_element, (0, 0))
+player_height = player_width = 128
+
+rightSwordWalk = func.easy_spritesheet("Images/Knight-Walk-Sheet-sword-right.png", (64, 64), (player_width, player_height))
+
+leftSwordWalk = func.easy_spritesheet("Images/Knight-Walk-Sheet-sword-left.png", (64, 64), (player_width, player_height))
+
+idle = func.easy_spritesheet("Images/Downloaded/Fantasy Pixel Art Asset Pack/Knight-Idle-Sheet.png", (64, 64), (player_width*0.9, player_height*0.9))
+
+
+activeAnimationList = rightSwordWalk
+
+playerAnim = Animator(activeAnimationList, 9)  # resize the sprites and pass them to the Animator constructor as a spritesheet
+playerWalk = Movement(playerAnim, leftSwordWalk, rightSwordWalk, idle, 3.6)
 
 screen_view = pygame.Surface((definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT))
 
-scroll_x = 0
-scroll_y = 0
-while True:
-    event = pygame.event.poll()
-    if event.type == pygame.QUIT:
-        break            
-    # if the winow is resized, update the definitions
-    if event.type == pygame.VIDEORESIZE:
-        definitions.SCREEN_WIDTH = event.w
-        definitions.SCREEN_HEIGHT = event.h
+clock = pygame.time.Clock()
 
-    scroll_x += 1
-    scroll_y += 1
-    world.scroll(-scroll_x, -scroll_y)
+fps = 60
 
-    
+scroll_x = scroll_y = 0
 
-    # if wasd or arrow keys are pressed
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_w or event.key == pygame.K_UP:
-            pass
-        if event.key == pygame.K_a or event.key == pygame.K_LEFT:
-            pass
-        if event.key == pygame.K_s or event.key == pygame.K_DOWN:
-            pass
-        if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
-            pass
+sw, sh = create_base_window_size()
 
-    # Clear the screen and set the screen background
-    screen.fill(definitions.BLACK)
+percentOfScreen = 0.15
 
-    # draw a blue circle at position (500, 500) with a radius of 20
-    pygame.draw.circle(screen, definitions.BLUE, (500, 500), 20)
+playerWalk.new_sprites(func.resize_sprites(leftSwordWalk, (sw*percentOfScreen, sw*percentOfScreen)), func.resize_sprites(rightSwordWalk, (sw*percentOfScreen, sw*percentOfScreen)), func.resize_sprites(idle, (sw*percentOfScreen, sw*percentOfScreen)))
+playerWalk.move_speed = sh/200
+prevSw = sw
+prevSh = sh
 
-    screen_view.blit(world, (0, 0), (scroll_x, scroll_y, definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT))
+up, down, left, right = create_movement_objects()
 
-    screen.blit(screen_view, (0, 0))
+playerScreenCoverage = player_width / sw
+
+screenSizeRatio = definitions.SCREEN_WIDTH / definitions.SCREEN_HEIGHT
+
+font = pygame.font.SysFont(None, 25)
+
+doTheThing = True
+while doTheThing:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            doTheThing = False
+        # handle window resizes
+        sw, sh = func.handle_resize(event, sw, sh)
+        if event.type == pygame.WINDOWRESIZED:
+            playerWalk.new_sprites(func.resize_sprites(leftSwordWalk, (sw * playerScreenCoverage, sw * playerScreenCoverage)),
+                                   func.resize_sprites(rightSwordWalk, (sw * playerScreenCoverage, sw * playerScreenCoverage)),
+                                   func.resize_sprites(idle, (sw * playerScreenCoverage, sw * playerScreenCoverage)))
+
+            playerWalk.move_speed = sh / 200
+
+            widthPercentOffset = scroll_x / prevSw
+            heightPercentOffset = scroll_y / prevSh
+
+            scroll_x = sw * widthPercentOffset
+            scroll_y = sh * heightPercentOffset
+
+            prevSh = sh
+            prevSw = sw
+
+            # sw = screenSizeRatio * sw
+            # sh = screenSizeRatio * sh
+            # screen.
+
+        # update the states of the up down left right things
+        up(event)
+        down(event)
+        left(event)
+        right(event)
+
+    screen.fill((100, 0, 140, 0))
+    world.fill((0, 0, 0, 0))
+
+    player.fill((0, 0, 0, 0))
+    player.blit(playerAnim(), (0, 0))
+    world.blit(player, (0, 0))
+
+    # Update the scrolling position based on the key flags
+    scroll_x, scroll_y = playerWalk(up, down, left, right, scroll_x, scroll_y)
+
+    screen_view.blit(world, (0, 0), (scroll_x, scroll_y, sw, sh))
+
+    screen.blit(world, (0, 0), (scroll_x, scroll_y, sw, sh))
+
+    current_fps = round(clock.get_fps(), 2)
+
+    fps_text = font.render("FPS: {}".format(current_fps), True, pygame.Color('white'))
+
+    screen.blit(fps_text, (10, 10))
+
+    pygame.display.update()
     pygame.display.flip()
 
-# Be IDLE friendly
-pygame.quit()
+    clock.tick(fps)
 
+pygame.quit()
