@@ -35,8 +35,6 @@ activeAnimationList = rightSwordWalk
 playerAnim = Animator(activeAnimationList, 9)  # resize the sprites and pass them to the Animator constructor as a spritesheet
 playerWalk = Movement(playerAnim, leftSwordWalk, rightSwordWalk, idle, 3.6)
 
-
-
 screen_view = pygame.Surface((definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT))
 
 clock = pygame.time.Clock()
@@ -47,9 +45,20 @@ scroll_x = scroll_y = 0
 
 sw, sh = create_base_window_size()
 
-playerWalk.new_sprites(func.resize_sprites(leftSwordWalk, (sw/8, sw/8)), func.resize_sprites(rightSwordWalk, (sw/8, sw/8)), func.resize_sprites(idle, (sw/8, sw/8)))
+percentOfScreen = 0.15
+
+playerWalk.new_sprites(func.resize_sprites(leftSwordWalk, (sw*percentOfScreen, sw*percentOfScreen)), func.resize_sprites(rightSwordWalk, (sw*percentOfScreen, sw*percentOfScreen)), func.resize_sprites(idle, (sw*percentOfScreen, sw*percentOfScreen)))
+playerWalk.move_speed = sh/200
+prevSw = sw
+prevSh = sh
 
 up, down, left, right = create_movement_objects()
+
+playerScreenCoverage = player_width / sw
+
+screenSizeRatio = definitions.SCREEN_WIDTH / definitions.SCREEN_HEIGHT
+
+font = pygame.font.SysFont(None, 25)
 
 doTheThing = True
 while doTheThing:
@@ -59,7 +68,24 @@ while doTheThing:
         # handle window resizes
         sw, sh = func.handle_resize(event, sw, sh)
         if event.type == pygame.WINDOWRESIZED:
-            playerWalk.new_sprites(func.resize_sprites(leftSwordWalk, (sw/8, sw/8)), func.resize_sprites(rightSwordWalk, (sw/8, sw/8)), func.resize_sprites(idle, (sw/8, sw/8)))
+            playerWalk.new_sprites(func.resize_sprites(leftSwordWalk, (sw * playerScreenCoverage, sw * playerScreenCoverage)),
+                                   func.resize_sprites(rightSwordWalk, (sw * playerScreenCoverage, sw * playerScreenCoverage)),
+                                   func.resize_sprites(idle, (sw * playerScreenCoverage, sw * playerScreenCoverage)))
+
+            playerWalk.move_speed = sh / 200
+
+            widthPercentOffset = scroll_x / prevSw
+            heightPercentOffset = scroll_y / prevSh
+
+            scroll_x = sw * widthPercentOffset
+            scroll_y = sh * heightPercentOffset
+
+            prevSh = sh
+            prevSw = sw
+
+            # sw = screenSizeRatio * sw
+            # sh = screenSizeRatio * sh
+            # screen.
 
         # update the states of the up down left right things
         up(event)
@@ -80,6 +106,14 @@ while doTheThing:
     screen_view.blit(world, (0, 0), (scroll_x, scroll_y, sw, sh))
 
     screen.blit(world, (0, 0), (scroll_x, scroll_y, sw, sh))
+
+    current_fps = round(clock.get_fps(), 2)
+
+    fps_text = font.render("FPS: {}".format(current_fps), True, pygame.Color('white'))
+
+    screen.blit(fps_text, (10, 10))
+
+    pygame.display.update()
     pygame.display.flip()
 
     clock.tick(fps)
