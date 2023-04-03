@@ -55,7 +55,6 @@ class Movement:
 
         return scroll_x, scroll_y
 
-
     def new_sprites(self, left_walk, right_walk, idle):
         self.leftWalk = left_walk
         self.rightWalk = right_walk
