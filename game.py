@@ -23,9 +23,9 @@ player = pygame.Surface((512, 512), pygame.SRCALPHA)  # define the player surfac
 
 player_height = player_width = 128
 
-rightSwordWalk = func.easy_spritesheet("Images/Knight-Walk-Sheet-sword-right.png", (64, 64), (player_width, player_height))
+rightSwordWalk = func.easy_spritesheet("Images/knight walks/Knight-Walk-Sheet-sword-right.png", (64, 64), (player_width, player_height))
 
-leftSwordWalk = func.easy_spritesheet("Images/Knight-Walk-Sheet-sword-left.png", (64, 64), (player_width, player_height))
+leftSwordWalk = func.easy_spritesheet("Images/knight walks/Knight-Walk-Sheet-sword-left.png", (64, 64), (player_width, player_height))
 
 idle = func.easy_spritesheet("Images/Downloaded/Fantasy Pixel Art Asset Pack/Knight-Idle-Sheet.png", (64, 64), (player_width*0.9, player_height*0.9))
 
