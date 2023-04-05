@@ -1,14 +1,12 @@
 import pygame
-import definitions
 import os
 
 import func
-from classes.spritesheet import Spritesheet
-from classes.keys import Key
 from classes.animator import Animator
-from func import resize_sprites
 from classes.movement import Movement
 from this_is_kinda_stupid_now import *
+from classes.json_handler import JsonFile
+from level_loader import level_loader
 
 pygame.init()
 
@@ -35,7 +33,7 @@ activeAnimationList = rightSwordWalk
 playerAnim = Animator(activeAnimationList, 9)  # resize the sprites and pass them to the Animator constructor as a spritesheet
 playerWalk = Movement(playerAnim, leftSwordWalk, rightSwordWalk, idle, 3.6)
 
-screen_view = pygame.Surface((definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT))
+screen_view = pygame.Surface((definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT), pygame.SRCALPHA)
 
 clock = pygame.time.Clock()
 
@@ -59,6 +57,12 @@ playerScreenCoverage = player_width / sw
 screenSizeRatio = definitions.SCREEN_WIDTH / definitions.SCREEN_HEIGHT
 
 font = pygame.font.SysFont(None, 25)
+
+# Create a level_loader instance
+lvl_loader = level_loader(screen_view, "levels/", "textures.json")
+
+# Load a new level
+lvl_loader.new_lvl("test.lvl")
 
 doTheThing = True
 while doTheThing:
@@ -98,14 +102,14 @@ while doTheThing:
 
     player.fill((0, 0, 0, 0))
     player.blit(playerAnim(), (0, 0))
-    world.blit(player, (0, 0))
+    # world.blit(player, (0, 0))
 
     # Update the scrolling position based on the key flags
     scroll_x, scroll_y = playerWalk(up, down, left, right, scroll_x, scroll_y)
 
-    screen_view.blit(world, (0, 0), (scroll_x, scroll_y, sw, sh))
+    screen.blit(screen_view, (0, 0), (-scroll_x, -scroll_y, sw, sh))
 
-    screen.blit(world, (0, 0), (scroll_x, scroll_y, sw, sh))
+    screen.blit(player, (sw/2-player_width/2, sh/2-player_height), (0, 0, sw, sh))
 
     current_fps = round(clock.get_fps(), 2)
 
