@@ -58,11 +58,17 @@ screenSizeRatio = definitions.SCREEN_WIDTH / definitions.SCREEN_HEIGHT
 
 font = pygame.font.SysFont(None, 25)
 
+player_collide_group = []
+
 # Create a level_loader instance
-lvl_loader = level_loader(screen_view, "levels/", "textures.json")
+lvl_loader = level_loader(screen_view, "levels/", "textures.json", player_collide_group)
 
 # Load a new level
 lvl_loader.new_lvl("test.lvl")
+
+# print(player_collide_group
+
+# dumbass_collision_surface_because_pygame_stupid_and_i_have_no_idea_what_the_hell_this_code_does = pygame.Surface((player_width))
 
 doTheThing = True
 while doTheThing:
@@ -75,6 +81,7 @@ while doTheThing:
             playerWalk.new_sprites(func.resize_sprites(leftSwordWalk, (sw * playerScreenCoverage, sw * playerScreenCoverage)),
                                    func.resize_sprites(rightSwordWalk, (sw * playerScreenCoverage, sw * playerScreenCoverage)),
                                    func.resize_sprites(idle, (sw * playerScreenCoverage, sw * playerScreenCoverage)))
+            player_height = player_width = sw*playerScreenCoverage
 
             playerWalk.move_speed = sh / 200
 
@@ -107,11 +114,58 @@ while doTheThing:
     # Update the scrolling position based on the key flags
     scroll_x, scroll_y = playerWalk(up, down, left, right, scroll_x, scroll_y)
 
-    screen.blit(screen_view, (0, 0), (-scroll_x, -scroll_y, sw, sh))
+    for thing in player_collide_group:
+        thing_rect = thing
 
-    screen.blit(player, (sw/2-player_width/2, sh/2-player_height), (0, 0, sw, sh))
+        # check for collision with player
+        player_rect = player.get_rect()
+        player_rect.center = (sw / 2, sh / 2)
+        if player_rect.colliderect(thing_rect):
 
-    current_fps = round(clock.get_fps(), 2)
+            # Calculate the overlap size for each direction
+            right_overlap = player.get_rect().right - thing_rect.left
+            left_overlap = thing_rect.right - player.get_rect().left
+            up_overlap = thing_rect.bottom - player.get_rect().top
+            down_overlap = player.get_rect().bottom - thing_rect.top
+
+            # Find the smallest overlap
+            min_overlap = min(right_overlap, left_overlap, up_overlap, down_overlap)
+
+            # detect right side collision
+            if min_overlap == right_overlap:
+                print("hit right")
+
+            # detect left side collision
+            elif min_overlap == left_overlap:
+                print("hit left")
+
+            # detect up collision
+            elif min_overlap == up_overlap:
+                print("hit up")
+
+            # detect down collision
+            elif min_overlap == down_overlap:
+                print("hit down")
+
+    # Draw the level surface
+    screen.blit(lvl_loader.surface, (0, 0), (-scroll_x, -scroll_y, sw, sh))
+
+    # Draw red boxes around the objects that are collided with
+    for thing_rect in player_collide_group:
+        thing_screen_pos = ((thing_rect.x + scroll_x), (thing_rect.y + scroll_y))
+        if player_rect.colliderect(thing_rect):
+            red_box_surface = pygame.Surface((thing_rect.width, thing_rect.height), pygame.SRCALPHA)
+            red_box_surface.fill((0, 0, 0, 0))
+            pygame.draw.rect(red_box_surface, (255, 0, 0), red_box_surface.get_rect(), 1)
+            screen.blit(red_box_surface, thing_screen_pos)
+            player_hitbox = pygame.Surface((player_width, player_height), pygame.SRCALPHA)
+            player_hitbox.fill((0, 0, 0, 0))
+            pygame.draw.rect(player_hitbox, (170, 23, 255), player_hitbox.get_rect(), 2)
+            screen.blit(player_hitbox, ((sw/2) - (player_width/2), (sh/2)- (player_height/2)))
+
+    screen.blit(player, ((sw/2)-(player_width/2), (sh/2)-(player_height/2)), (0, 0, sw, sh))
+
+    current_fps = round(clock.get_fps(), 10)
 
     fps_text = font.render("FPS: {}".format(current_fps), True, pygame.Color('white'))
 

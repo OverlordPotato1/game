@@ -1,4 +1,5 @@
 {
-  "a": "Images/Downloaded/Fantasy Pixel Art Asset Pack/BasicGreenTiles/Dirt_1_16x16.png",
-  "b": "Images/Downloaded/Fantasy Pixel Art Asset Pack/BasicGreenTiles/Green_1_16x16.png"
+  "null": {"path": "Images/Null.png", "collidable":  false},
+  "a": {"path": "Images/Downloaded/Fantasy Pixel Art Asset Pack/BasicGreenTiles/Dirt_1_16x16.png", "collidable": true},
+  "b": {"path": "Images/Downloaded/Fantasy Pixel Art Asset Pack/BasicGreenTiles/Green_1_16x16.png", "collidable": true}
 }
