@@ -66,9 +66,8 @@ lvl_loader = level_loader(screen_view, "levels/", "textures.json", player_collid
 # Load a new level
 lvl_loader.new_lvl("test.lvl")
 
-# print(player_collide_group
 
-# dumbass_collision_surface_because_pygame_stupid_and_i_have_no_idea_what_the_hell_this_code_does = pygame.Surface((player_width))
+
 
 doTheThing = True
 while doTheThing:
@@ -115,12 +114,12 @@ while doTheThing:
     scroll_x, scroll_y = playerWalk(up, down, left, right, scroll_x, scroll_y)
 
     for thing in player_collide_group:
-        thing_rect = thing
+        thing_rect = thing[1]
 
         # check for collision with player
         player_rect = player.get_rect()
         player_rect.center = (sw / 2, sh / 2)
-        if player_rect.colliderect(thing_rect):
+        if func.pixel_collision(player, player.get_rect(), thing[0], thing[1]):
 
             # Calculate the overlap size for each direction
             right_overlap = player.get_rect().right - thing_rect.left
@@ -152,8 +151,9 @@ while doTheThing:
 
     # Draw red boxes around the objects that are collided with
     for thing_rect in player_collide_group:
-        thing_screen_pos = ((thing_rect.x + scroll_x), (thing_rect.y + scroll_y))
-        if player_rect.colliderect(thing_rect):
+        thing_screen_pos = ((thing[1].x + scroll_x), (thing[1].y + scroll_y))
+
+        if func.pixel_collision(player, player.get_rect(), thing[0], thing[1]):
             red_box_surface = pygame.Surface((thing_rect.width, thing_rect.height), pygame.SRCALPHA)
             red_box_surface.fill((0, 0, 0, 0))
             pygame.draw.rect(red_box_surface, (255, 0, 0), red_box_surface.get_rect(), 1)

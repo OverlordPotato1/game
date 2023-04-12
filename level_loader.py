@@ -80,14 +80,16 @@ class level_loader:
                 # Check if the tile is collidable and add it to the player_collide_group
                 if tile_data.get("collidable", False):
                     tile_rect = texture_surface.get_rect(topleft=pos)
-                    self.collide_group.append(tile_rect)
+                    self.collide_group.append((texture_surface, tile_rect))
+
 
                 # Calculate the position of the tile on the level surface
                 pos = (col_idx * definitions.tile_size,
                        row_idx * definitions.tile_size)
 
                 tile_rect = texture_surface.get_rect(topleft=pos)
-                self.collide_group.append(tile_rect)
+                self.collide_group.append((texture_surface, tile_rect))
+
 
                 # Draw the texture on the level surface at the calculated position
                 self.surface.blit(texture_surface, pos)
