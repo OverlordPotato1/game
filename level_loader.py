@@ -1,6 +1,7 @@
 import pygame
 import definitions
 from classes.json_handler import JsonFile
+from classes.sprite import Sprite
 
 
 def textLoader(file):
@@ -42,11 +43,10 @@ class level_loader:
         self.textures = JsonFile(textures)
         self.texture_dict = {}
         self.collide_group = collide_group
-        # self.tile_screen_coverage =
+        self.all_sprites = pygame.sprite.Group()
 
     def __load_textures(self):
         self.texture_dict = self.textures.fetch()
-        # print(self.textures.fetch())
 
     def new_lvl(self, file_name):
         self.__load_textures()
@@ -70,31 +70,22 @@ class level_loader:
                     tile_data = self.texture_dict["null"]
                 texture_path = tile_data["path"]
 
-                # Load the texture surface from the image file
-                texture_surface = pygame.image.load(texture_path)
+                # Create a new Sprite object with the texture image
+                sprite = Sprite(texture_path, (definitions.tile_size, definitions.tile_size))
 
-                # Scale the texture surface to match definitions.tile_size
-                texture_surface = pygame.transform.scale(texture_surface,
-                                                         (definitions.tile_size, definitions.tile_size))
+                # Set the position of the sprite on the level surface
+                sprite.rect.topleft = pos
 
                 # Check if the tile is collidable and add it to the player_collide_group
                 if tile_data.get("collidable", False):
-                    tile_rect = texture_surface.get_rect(topleft=pos)
-                    self.collide_group.append((texture_surface, tile_rect))
+                    self.collide_group.add(sprite)
 
-
-                # Calculate the position of the tile on the level surface
-                pos = (col_idx * definitions.tile_size,
-                       row_idx * definitions.tile_size)
-
-                tile_rect = texture_surface.get_rect(topleft=pos)
-                self.collide_group.append((texture_surface, tile_rect))
-
-
-                # Draw the texture on the level surface at the calculated position
-                self.surface.blit(texture_surface, pos)
+                # Add the sprite to the all_sprites group
+                self.all_sprites.add(sprite)
 
         # Blit the level surface onto the main surface
         # self.surface.blit(level_surface, (0, 0))
         # Update the display to show the new level
+        self.all_sprites.draw(self.surface)
+
         pygame.display.flip()
