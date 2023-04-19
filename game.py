@@ -41,7 +41,7 @@ clock = pygame.time.Clock()
 
 fps = 60
 
-scroll_x = scroll_y = 0
+
 
 sw, sh = create_base_window_size()
 
@@ -79,9 +79,19 @@ playerSprite.rect.y = (definitions.SCREEN_HEIGHT / 2) - (player_height / 2)
 
 playerGroupBecauseIHaveNoClueWhatImDoing.add(playerSprite)
 
-lastX = scroll_x
-lastY = scroll_y
+scroll_x = 300
+scroll_y = 600
 
+lastX = 0
+lastY = 0
+
+vel_y = 0
+vel_x = 0
+
+onGround = False
+
+
+# playerSprite.rect.y 
 
 doTheThing = True
 while doTheThing:
@@ -144,9 +154,31 @@ while doTheThing:
 
     
 
-    collision = pygame.sprite.spritecollide(playerSprite, player_collide_group, False)
-    if collision:
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    # collision = pygame.sprite.spritecollide(playerSprite, player_collide_group, False)
+    # if collision:
+    #     print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+
+
+
+    for sprite in player_collide_group:
+        # if playerSprite.rect.colliderect(sprite.rect):
+        player_bottom = playerSprite.rect.bottom
+        player_top = playerSprite.rect.top
+        sprite_bottom = sprite.rect.bottom
+        sprite_top = sprite.rect.top
+        vertical_overlap = sprite_top - player_bottom
+        print(sprite_top, player_bottom, sprite_bottom, player_top)
+        if sprite_top <= player_bottom + 20 and sprite_top >= player_bottom - 40:
+            print("fall")
+            vel_y = 1
+            onGround = True
+            throughGround = True
+
+    if onGround == False:
+        vel_y -= 1
+    scroll_y += vel_y
+    
+
 
     # Draw the level surface
     screen.blit(lvl_loader.surface, (0, 0), (-scroll_x, -scroll_y, sw, sh))
