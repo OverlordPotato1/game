@@ -151,7 +151,7 @@ while doTheThing:
         vel_y = 15
         onGround = False
     
-    print(onGround)
+    # print(onGround)
     if onGround == False:
         vel_y -= 1
         # pass
