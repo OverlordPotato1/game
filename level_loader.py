@@ -83,8 +83,6 @@ class level_loader:
                 # Add the sprite to the all_sprites group
                 self.all_sprites.add(sprite)
 
-        # Blit the level surface onto the main surface
-        # self.surface.blit(level_surface, (0, 0))
         # Update the display to show the new level
         self.all_sprites.draw(self.surface)
 
