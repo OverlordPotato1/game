@@ -49,6 +49,8 @@ prevSh = sh
 
 up, down, left, right = create_movement_objects()
 
+v = Key(pygame.K_v)
+
 playerScreenCoverage = player_width / sw
 
 screenSizeRatio = definitions.SCREEN_WIDTH / definitions.SCREEN_HEIGHT
@@ -80,14 +82,25 @@ scroll_y = 580
 lastX = 0
 lastY = 0
 
-vel_y = 10
-vel_x = 0
+
+
+startVelY = 10
+startVelX = -7
+
+vel_y = startVelY
+vel_x = startVelX
 
 onGround = False
 
 playerTouching = touching(playerSprite)
 
 lastJump = 0
+
+returnFromVoid = True
+
+noClip = False
+
+prevV = False
 
 doTheThing = True
 while doTheThing:
@@ -105,14 +118,25 @@ while doTheThing:
         left(event)
         right(event)
 
+        v(event)
+
     # Clear content from background
     screen.fill((100, 0, 140, 0))
     world.fill((0, 0, 0, 0))
 
     
-
     # Update the scrolling position based on the key flags
-    vel_x, garbage = playerWalk(up, down, left, right, 0, 0)
+    noClip, prevV = func.handle_noClip(noClip, v, prevV, playerWalk)
+    
+    
+
+    if not noClip:
+        if not returnFromVoid:
+            vel_x, garbage = playerWalk(up, down, left, right, 0, 0)
+        onGround = False
+    else:
+        vel_x, vel_y = playerWalk(up, down, left, right, 0, 0)
+        onGround = True
 
     for sprite in player_collide_group:
         sprite.rect.x += scroll_x - lastX
@@ -120,66 +144,76 @@ while doTheThing:
 
     lastX = scroll_x
     lastY = scroll_y
-
-    onGround = False
-
-    # print(vel_x, vel_y)
     
     hittingHead = False
 
-    for sprite in player_collide_group:
-        # if playerSprite.rect.colliderect(sprite.rect):
-        player_bottom = playerSprite.rect.bottom + 30
-        player_top = playerSprite.rect.top
-        sprite_bottom = sprite.rect.bottom
-        sprite_top = sprite.rect.top
-        vertical_overlap = sprite_top - player_bottom
-        if onGround == False:
-            if playerTouching.bottom(sprite) == 2:
-                onGround = True
-                scroll_y -= vertical_overlap + 8
-            elif playerTouching.bottom(sprite) == 1:
-                onGround = True
-            else:
-                onGround = False
-            if playerTouching.top(sprite) == 2:
-                vel_y = 0
-                hittingHead = True
-            if playerTouching.right(sprite) == 2:
-                if vel_x < 0:
-                    vel_x = 0
-                    # playerAnim.undoChange()
-            if playerTouching.left(sprite) == 2:
-                if vel_x > 0:
-                    vel_x = 0
+    if not noClip:
+        for sprite in player_collide_group:
+            player_bottom = playerSprite.rect.bottom + 30
+            player_top = playerSprite.rect.top
+            sprite_bottom = sprite.rect.bottom
+            sprite_top = sprite.rect.top
+            
+            if onGround == False:
+                if playerTouching.bottom(sprite) == 2:
+                    onGround = True
+                    vertical_overlap = sprite_top - player_bottom
+                    scroll_y -= vertical_overlap + 8
+                elif playerTouching.bottom(sprite) == 1:
+                    onGround = True
+                else:
+                    onGround = False
+                if playerTouching.top(sprite) == 2:
+                    vel_y = 0
+                    hittingHead = True
+                    vertical_overlap = sprite_bottom - player_top
+                    scroll_y -= vertical_overlap - 32
+                if playerTouching.right(sprite) == 2:
+                    if vel_x < 0:
+                        vel_x = 0
+                if playerTouching.left(sprite) == 2:
+                    if vel_x > 0:
+                        vel_x = 0
                     
 
     playerSprite.image = playerAnim()
-            
-    scroll_x += vel_x
-    if scroll_x > 0:
-        scroll_x = 0
 
-    if up and onGround and not (lastJump > 0):
-        lastJump = 30
-        vel_y = 18
-        onGround = False
     
-    lastJump -= 1
+            
+    
+    if not noClip:
+        if up and onGround and not (lastJump > 0):
+            lastJump = 30
+            vel_y = 18
+            onGround = False
+        
+        lastJump -= 1
 
-    if onGround == False:
-        vel_y -= 1
-        # pass
+        if onGround == False:
+            vel_y -= 1
+            # pass
+        else:
+            if not vel_y > 0:
+                vel_y = 0
+
+        scroll_y += vel_y
+
+        if scroll_y < -10000:
+            scroll_y = 600
+            scroll_x = 0
+            vel_y = startVelY
+            vel_x = startVelX
+            returnFromVoid = True
+
+        if onGround and returnFromVoid:
+            returnFromVoid = False
+
+        scroll_x += vel_x
+        if scroll_x > 0:
+            scroll_x = 0
     else:
-        vel_y = 0
-
-    scroll_y += vel_y
-
-    if scroll_y < -10000:
-        scroll_y = 600
-        scroll_x = 0
-        vel_y = 10
-        vel_x = 0
+        scroll_x += vel_x
+        scroll_y += vel_y
 
     # Draw the level surface
     screen.blit(lvl_loader.surface, (0, 0), (-scroll_x, -scroll_y, sw, sh))

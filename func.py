@@ -58,3 +58,14 @@ def pixel_collision(surface1, rect1, surface2, rect2):
 
     return False
 
+def handle_noClip(noClip, v, prevV, playerWalk):
+    if bool(v) == True and prevV == False:
+        noClip = not noClip
+        if noClip:
+            playerWalk.move_speed = 8
+        else:
+            playerWalk.move_speed = 4
+        
+    prevV = bool(v)
+    return noClip, prevV
+

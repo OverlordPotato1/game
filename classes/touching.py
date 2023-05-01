@@ -10,10 +10,10 @@ class touching:
         entity_top = self.entity.rect.top
         entity_left = self.entity.rect.left + 20
         entity_right = self.entity.rect.right - 20
-        sprite_bottom = sprite.rect.bottom
+        sprite_bottom = sprite.rect.bottom - definitions.tile_size
         sprite_top = sprite.rect.top
-        sprite_left = sprite.rect.left
-        sprite_right = sprite.rect.right - 34
+        sprite_left = sprite.rect.left + 20
+        sprite_right = sprite.rect.right - 32
 
         # check if lined up vertically
         if entity_left < sprite_left and entity_right > sprite_left or entity_left < sprite_right and entity_right > sprite_right:
@@ -36,8 +36,8 @@ class touching:
         entity_right = self.entity.rect.right - 20
         sprite_bottom = sprite.rect.bottom
         sprite_top = sprite.rect.top
-        sprite_left = sprite.rect.left
-        sprite_right = sprite.rect.right - 25
+        sprite_left = sprite.rect.left + 20
+        sprite_right = sprite.rect.right - 32
 
         # +x ------>
         # +y /\
@@ -58,7 +58,7 @@ class touching:
         entity_top = self.entity.rect.top
         entity_left = self.entity.rect.left - 20
         entity_right = self.entity.rect.right
-        sprite_bottom = sprite.rect.bottom
+        sprite_bottom = sprite.rect.bottom - 38
         sprite_top = sprite.rect.top
         sprite_left = sprite.rect.left - definitions.tile_size
         sprite_right = sprite.rect.right - definitions.tile_size
@@ -80,7 +80,7 @@ class touching:
         entity_top = self.entity.rect.top
         entity_left = self.entity.rect.left
         entity_right = self.entity.rect.right - 20
-        sprite_bottom = sprite.rect.bottom
+        sprite_bottom = sprite.rect.bottom - 38
         sprite_top = sprite.rect.top
         sprite_left = sprite.rect.left
         sprite_right = sprite.rect.right

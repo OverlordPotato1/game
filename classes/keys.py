@@ -3,7 +3,7 @@ import pygame
 
 class Key:
     def __init__(self, keylist):
-        if isinstance(keylist, str):
+        if isinstance(keylist, int):
             keylist = [keylist]
 
         self.keylist = keylist
