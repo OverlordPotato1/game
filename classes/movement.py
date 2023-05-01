@@ -15,24 +15,24 @@ class Movement:
     def __call__(self, up, down, left, right, scroll_x, scroll_y):
         succeed = 0
         ms = self.move_speed
-        if up and not down:
-            scroll_y += ms
-            succeed += 1
-            if self.last_direction == -2:
-                self.animation_class.switch_sheet(self.leftWalk)
-                self.last_direction = 1
-            elif self.last_direction == -1:
-                self.animation_class.switch_sheet(self.rightWalk)
-                self.last_direction = 0
-        if down and not up:
-            scroll_y -= ms
-            succeed += 1
-            if self.last_direction == -2:
-                self.animation_class.switch_sheet(self.leftWalk)
-                self.last_direction = 1
-            elif self.last_direction == -1:
-                self.animation_class.switch_sheet(self.rightWalk)
-                self.last_direction = 0
+        # if up and not down:
+        #     scroll_y += ms
+        #     succeed += 1
+        #     if self.last_direction == -2:
+        #         self.animation_class.switch_sheet(self.leftWalk)
+        #         self.last_direction = 1
+        #     elif self.last_direction == -1:
+        #         self.animation_class.switch_sheet(self.rightWalk)
+        #         self.last_direction = 0
+        # if down and not up:
+        #     scroll_y -= ms
+        #     succeed += 1
+        #     if self.last_direction == -2:
+        #         self.animation_class.switch_sheet(self.leftWalk)
+        #         self.last_direction = 1
+        #     elif self.last_direction == -1:
+        #         self.animation_class.switch_sheet(self.rightWalk)
+        #         self.last_direction = 0
         if left and not right:
             scroll_x += ms
             if self.last_direction != 1:

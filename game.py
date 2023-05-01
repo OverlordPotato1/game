@@ -87,6 +87,8 @@ onGround = False
 
 playerTouching = touching(playerSprite)
 
+lastJump = 0
+
 doTheThing = True
 while doTheThing:
     player_collide_group = lvl_loader.collide_group
@@ -107,7 +109,7 @@ while doTheThing:
     screen.fill((100, 0, 140, 0))
     world.fill((0, 0, 0, 0))
 
-    playerSprite.image = playerAnim()
+    
 
     # Update the scrolling position based on the key flags
     vel_x, garbage = playerWalk(up, down, left, right, 0, 0)
@@ -120,6 +122,8 @@ while doTheThing:
     lastY = scroll_y
 
     onGround = False
+
+    # print(vel_x, vel_y)
     
     hittingHead = False
 
@@ -130,10 +134,8 @@ while doTheThing:
         sprite_bottom = sprite.rect.bottom
         sprite_top = sprite.rect.top
         vertical_overlap = sprite_top - player_bottom
-        # print(playerTouching.bottom(sprite))
         if onGround == False:
             if playerTouching.bottom(sprite) == 2:
-                # vel_y = 0
                 onGround = True
                 scroll_y -= vertical_overlap + 8
             elif playerTouching.bottom(sprite) == 1:
@@ -143,15 +145,28 @@ while doTheThing:
             if playerTouching.top(sprite) == 2:
                 vel_y = 0
                 hittingHead = True
+            if playerTouching.right(sprite) == 2:
+                if vel_x < 0:
+                    vel_x = 0
+                    # playerAnim.undoChange()
+            if playerTouching.left(sprite) == 2:
+                if vel_x > 0:
+                    vel_x = 0
+                    
+
+    playerSprite.image = playerAnim()
             
-    scroll_x = -abs(-(scroll_x + vel_x))         
+    scroll_x += vel_x
+    if scroll_x > 0:
+        scroll_x = 0
 
-    if up and onGround and not hittingHead:
-
-        vel_y = 15
+    if up and onGround and not (lastJump > 0):
+        lastJump = 30
+        vel_y = 18
         onGround = False
     
-    # print(onGround)
+    lastJump -= 1
+
     if onGround == False:
         vel_y -= 1
         # pass
@@ -167,7 +182,7 @@ while doTheThing:
         vel_x = 0
 
     # Draw the level surface
-    screen.blit(lvl_loader.surface, (0, 0), (abs(-scroll_x), -scroll_y, sw, sh))
+    screen.blit(lvl_loader.surface, (0, 0), (-scroll_x, -scroll_y, sw, sh))
 
     screen.blit(world, ((sw/2)-(player_width/2), (sh/2)-(player_height/2)), (0, 0, sw, sh))
     
