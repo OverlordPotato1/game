@@ -102,6 +102,10 @@ noClip = False
 
 prevV = False
 
+prevHittingHead = False
+
+headHitTime = 0
+
 doTheThing = True
 while doTheThing:
     player_collide_group = lvl_loader.collide_group
@@ -158,6 +162,9 @@ while doTheThing:
                 if playerTouching.bottom(sprite) == 2:
                     onGround = True
                     vertical_overlap = sprite_top - player_bottom
+                    if abs(vertical_overlap) > 50:
+                        # if something fucked up badly ignore it and let it fix itself
+                        vertical_overlap = 0
                     scroll_y -= vertical_overlap + 8
                 elif playerTouching.bottom(sprite) == 1:
                     onGround = True
@@ -167,13 +174,24 @@ while doTheThing:
                     vel_y = 0
                     hittingHead = True
                     vertical_overlap = sprite_bottom - player_top
+                    if abs(vertical_overlap) > 50:
+                        # if something fucked up badly ignore it and let it fix itself
+                        vertical_overlap = 0
                     scroll_y -= vertical_overlap - 32
+                elif playerTouching.top(sprite) == 1 and vel_y > 0:
+                    vel_y /= 1.5
                 if playerTouching.right(sprite) == 2:
                     if vel_x < 0:
                         vel_x = 0
                 if playerTouching.left(sprite) == 2:
                     if vel_x > 0:
                         vel_x = 0
+
+        
+
+    
+    
+    
                     
 
     playerSprite.image = playerAnim()
@@ -191,10 +209,20 @@ while doTheThing:
 
         if onGround == False:
             vel_y -= 1
-            # pass
+            # passw
         else:
             if not vel_y > 0:
                 vel_y = 0
+
+        headHitTime -= 1
+
+        if hittingHead and not prevHittingHead:
+            headHitTime = 5
+
+        prevHittingHead = hittingHead
+
+        if headHitTime > 0:
+            vel_y = 0
 
         scroll_y += vel_y
 

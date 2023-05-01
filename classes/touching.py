@@ -19,7 +19,7 @@ class touching:
         if entity_left < sprite_left and entity_right > sprite_left or entity_left < sprite_right and entity_right > sprite_right:
             if sprite_bottom >= entity_top - 30 and sprite_top <= entity_bottom:
                 return 2
-            elif sprite_right >= entity_left - 30 and sprite_left <= entity_right - 15:
+            elif sprite_bottom >= entity_top - 35 and sprite_top <= entity_bottom:
                 return 1
             else:
                 return 0
@@ -44,7 +44,7 @@ class touching:
 
         # check if lined up horizontally
         if entity_left < sprite_left and entity_right > sprite_left or entity_left < sprite_right and entity_right > sprite_right: # it works idk how but it works so dont touch it
-            if sprite_top <= entity_bottom + 30 and sprite_top >= entity_bottom - 15:
+            if sprite_top <= entity_bottom + 25 and sprite_top >= entity_bottom - 15:
                 return 2
             elif sprite_top <= entity_bottom + 30 and sprite_top >= entity_bottom - 20:
                 return 1
