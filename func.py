@@ -1,5 +1,6 @@
 import pygame
 from classes.spritesheet import Spritesheet as spsh
+import hashlib
 
 
 def resize_sprites(spritesheet, dimensions):
@@ -69,3 +70,12 @@ def handle_noClip(noClip, v, prevV, playerWalk):
     prevV = bool(v)
     return noClip, prevV
 
+def get_file_sha256(file_path):
+    sha256_hash = hashlib.sha256()
+    
+    with open(file_path, "rb") as file:
+        # Read and update hash in chunks to save memory
+        for chunk in iter(lambda: file.read(4096), b""):
+            sha256_hash.update(chunk)
+    
+    return sha256_hash.hexdigest()

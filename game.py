@@ -70,6 +70,7 @@ lvl_loader = level_loader(screen_view, "levels/", "textures.json", player_collid
 
 # Load a new level
 lvl_loader.new_lvl("test.lvl")
+prevHash = func.get_file_sha256("levels/test.lvl")
 
 frames = 0
 
@@ -120,9 +121,23 @@ start = 0
 
 playerInSprite = False
 
+x_change = 0
+y_change = 0
+
 doTheThing = True
 while doTheThing:
     player_collide_group = lvl_loader.collide_group
+
+    if prevHash != func.get_file_sha256("levels/test.lvl"):
+        lvl_loader.new_lvl("test.lvl")
+        prevHash = func.get_file_sha256("levels/test.lvl")
+        # scroll_x = 0
+        # scroll_y = 580
+        # sprite.rect.x += scroll_x
+        # sprite.rect.y += scroll_y
+        for sprite in player_collide_group:
+            sprite.rect.x += scroll_x
+            sprite.rect.y += scroll_y
 
     
 
@@ -163,6 +178,8 @@ while doTheThing:
     for sprite in player_collide_group:
         sprite.rect.x += scroll_x - lastX
         sprite.rect.y += scroll_y - lastY
+        x_change += scroll_x - lastX
+        y_change += scroll_y - lastY
 
     lastX = scroll_x
     lastY = scroll_y
@@ -190,10 +207,8 @@ while doTheThing:
                 and player_bottom - definitions.tile_size*2 < sprite_top 
                 or player_bottom - definitions.tile_size > sprite_bottom 
                 and player_bottom - definitions.tile_size*2 < sprite_bottom):
-
                     cantPhaseThrough = True
 
-            
             if onGround == False:
                 if playerTouching.bottom(sprite) == 2:
                     if vel_y < 0:
@@ -202,7 +217,7 @@ while doTheThing:
                         if abs(vertical_overlap) > 50:
                             # if something fucked up badly ignore it and let it fix itself
                             vertical_overlap = 0
-                        if not down:
+                        if not down and vel_y != 0:
                             scroll_y -= vertical_overlap + 14
                 elif playerTouching.bottom(sprite) == 1:
                     onGround = True
