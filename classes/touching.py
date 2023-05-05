@@ -33,7 +33,7 @@ class touching:
         entity_bottom = self.entity.rect.bottom
         entity_top = self.entity.rect.top
         entity_left = self.entity.rect.left + 30
-        entity_right = self.entity.rect.right - 20
+        entity_right = self.entity.rect.right - 10
         sprite_bottom = sprite.rect.bottom
         sprite_top = sprite.rect.top
         sprite_left = sprite.rect.left + 20
@@ -56,7 +56,7 @@ class touching:
     def left(self, sprite):
         entity_bottom = self.entity.rect.bottom
         entity_top = self.entity.rect.top
-        entity_left = self.entity.rect.left - 20
+        entity_left = self.entity.rect.left - 12
         entity_right = self.entity.rect.right
         sprite_bottom = sprite.rect.bottom - 38
         sprite_top = sprite.rect.top
@@ -79,7 +79,7 @@ class touching:
         entity_bottom = self.entity.rect.bottom
         entity_top = self.entity.rect.top
         entity_left = self.entity.rect.left
-        entity_right = self.entity.rect.right - 20
+        entity_right = self.entity.rect.right - 26
         sprite_bottom = sprite.rect.bottom - 38
         sprite_top = sprite.rect.top
         sprite_left = sprite.rect.left

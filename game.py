@@ -25,6 +25,10 @@ rightSwordWalk = func.easy_spritesheet("Images/knight walks/Knight-Walk-Sheet-sw
 
 leftSwordWalk = func.easy_spritesheet("Images/knight walks/Knight-Walk-Sheet-sword-left.png", (64, 64), (player_width, player_height))
 
+rightSwordWalk = []
+for x, img in enumerate(leftSwordWalk):
+    rightSwordWalk.append(pygame.transform.flip(img, True, False))
+
 idle = func.easy_spritesheet("Images/Downloaded/Fantasy Pixel Art Asset Pack/Knight-Idle-Sheet.png", (64, 64), (player_width*0.9, player_height*0.9))
 
 
@@ -50,6 +54,8 @@ prevSh = sh
 up, down, left, right = create_movement_objects()
 
 v = Key(pygame.K_v)
+
+k = Key(pygame.K_k)
 
 playerScreenCoverage = player_width / sw
 
@@ -106,6 +112,14 @@ prevHittingHead = False
 
 headHitTime = 0
 
+yHist = []
+
+prevOnGround = False
+
+start = 0
+
+playerInSprite = False
+
 doTheThing = True
 while doTheThing:
     player_collide_group = lvl_loader.collide_group
@@ -123,6 +137,7 @@ while doTheThing:
         right(event)
 
         v(event)
+        k(event)
 
     # Clear content from background
     screen.fill((100, 0, 140, 0))
@@ -131,8 +146,11 @@ while doTheThing:
     
     # Update the scrolling position based on the key flags
     noClip, prevV = func.handle_noClip(noClip, v, prevV, playerWalk)
+
+    if k.single():
+        vel_y = 50
     
-    
+    prevK = bool(k)
 
     if not noClip:
         if not returnFromVoid:
@@ -152,77 +170,112 @@ while doTheThing:
     hittingHead = False
 
     if not noClip:
+        playerInSprite = False
+        cantPhaseThrough = False
+
         for sprite in player_collide_group:
             player_bottom = playerSprite.rect.bottom + 30
             player_top = playerSprite.rect.top
+            player_left = playerSprite.rect.left + 26
+            player_right = playerSprite.rect.right - 10
             sprite_bottom = sprite.rect.bottom
             sprite_top = sprite.rect.top
+            sprite_left = sprite.rect.left + 20
+            sprite_right = sprite.rect.right - 35
+
+            if player_right >= sprite_left and player_left <= sprite_right:
+                if player_bottom >= sprite_top and player_top <= sprite_bottom:
+                    playerInSprite = True
+                if (player_bottom - definitions.tile_size > sprite_top 
+                and player_bottom - definitions.tile_size*2 < sprite_top 
+                or player_bottom - definitions.tile_size > sprite_bottom 
+                and player_bottom - definitions.tile_size*2 < sprite_bottom):
+
+                    cantPhaseThrough = True
+
             
             if onGround == False:
                 if playerTouching.bottom(sprite) == 2:
-                    onGround = True
-                    vertical_overlap = sprite_top - player_bottom
-                    if abs(vertical_overlap) > 50:
-                        # if something fucked up badly ignore it and let it fix itself
-                        vertical_overlap = 0
-                    scroll_y -= vertical_overlap + 8
+                    if vel_y < 0:
+                        onGround = True
+                        vertical_overlap = sprite_top - player_bottom
+                        if abs(vertical_overlap) > 50:
+                            # if something fucked up badly ignore it and let it fix itself
+                            vertical_overlap = 0
+                        if not down:
+                            scroll_y -= vertical_overlap + 14
                 elif playerTouching.bottom(sprite) == 1:
                     onGround = True
                 else:
                     onGround = False
                 if playerTouching.top(sprite) == 2:
-                    vel_y = 0
-                    hittingHead = True
-                    vertical_overlap = sprite_bottom - player_top
-                    if abs(vertical_overlap) > 50:
-                        # if something fucked up badly ignore it and let it fix itself
-                        vertical_overlap = 0
-                    scroll_y -= vertical_overlap - 32
+                    # vel_y = 0
+                    # hittingHead = True
+                    # vertical_overlap = sprite_bottom - player_top
+                    # if abs(vertical_overlap) > 50:
+                    #     # if something fucked up badly ignore it and let it fix itself
+                    #     vertical_overlap = 0
+                    # scroll_y -= vertical_overlap - 32
+                    pass
                 elif playerTouching.top(sprite) == 1 and vel_y > 0:
-                    vel_y /= 1.5
-                if playerTouching.right(sprite) == 2:
-                    if vel_x < 0:
-                        vel_x = 0
-                if playerTouching.left(sprite) == 2:
-                    if vel_x > 0:
-                        vel_x = 0
+                    # vel_y *= 2
+                    pass
+                if not playerInSprite:
+                    if playerTouching.right(sprite) == 2:
+                        if vel_x < 0:
+                            vel_x = 0
+                    if playerTouching.left(sprite) == 2:
+                        if vel_x > 0:
+                            vel_x = 0
 
-        
+    justLanded = False
 
-    
-    
-    
-                    
+    if onGround and not prevOnGround:
+        justLanded = True
 
-    playerSprite.image = playerAnim()
-
+    prevOnGround = onGround
     
-            
+    playerSprite.image = playerAnim()    
     
     if not noClip:
-        if up and onGround and not (lastJump > 0):
+        if up and onGround and not lastJump > 0:
+            # if not nextJumpUpLevel:
+            #     lastJump = 30
+            #     vel_y = 18
+            # else:
             lastJump = 30
-            vel_y = 18
+            vel_y = 23
+
             onGround = False
+
+        if not onGround:
+            print(vel_x)
+
+        if down and not cantPhaseThrough:
+            vel_y = -20
+            
+
         
         lastJump -= 1
 
         if onGround == False:
             vel_y -= 1
-            # passw
         else:
             if not vel_y > 0:
                 vel_y = 0
 
         headHitTime -= 1
 
-        if hittingHead and not prevHittingHead:
-            headHitTime = 5
+        # if hittingHead and not prevHittingHead:
+        #     headHitTime = 5
 
-        prevHittingHead = hittingHead
+        # prevHittingHead = hittingHead
 
-        if headHitTime > 0:
-            vel_y = 0
+        # if headHitTime > 0:
+        #     vel_y = 0
+
+        if hittingHead:
+            vel_y = 10
 
         scroll_y += vel_y
 
@@ -266,5 +319,7 @@ while doTheThing:
     clock.tick(fps)
 
     frames += 1
+
+    k.x()
 
 pygame.quit()
