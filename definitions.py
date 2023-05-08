@@ -30,8 +30,8 @@ DARK_PINK = (255, 20, 147)
 LIGHT_GREEN = (0, 255, 0)
 LIGHT_BLUE = (0, 0, 255)
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 800
 
 TILE_SIZE = 32
 
@@ -44,3 +44,5 @@ UP_KEYS = [pygame.K_UP, pygame.K_w]
 DOWN_KEYS = [pygame.K_DOWN, pygame.K_s]
 LEFT_KEYS = [pygame.K_LEFT, pygame.K_a]
 RIGHT_KEYS = [pygame.K_RIGHT, pygame.K_d]
+
+tile_size = 64

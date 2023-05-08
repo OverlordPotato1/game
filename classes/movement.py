@@ -70,37 +70,3 @@ class Movement:
             self.animation_class.switch_sheet(self.flippedIdle)
         elif self.last_direction == -2:
             self.animation_class.switch_sheet(self.idle)
-
-
-
-"""
-Fixing this fucking piece of shit file i fucking hate this why the fuck does this happen
-
-Problem:
-    it refuses to not be self.idle even when it has never been defined as self.idle
-    
-Information:
-    when i give it self.animation_class.switch_sheet(self.flippedIdle) it act like i gave it self.idle
-    
-    I've tried setting both self.idles in "if succeed == 0:" to self.flippedIdle and it still doesn't work
-    
-    When self.idle is it doesn't flip back
-    
-Verified works as intended:
-    functions.flip_spritesheet()
-    func.flip_spritesheet()    
-    
-Explanation:
-    pygame.transform.flip() DOES NOT RETURN THE FLIPPED FILE IT JUST MODIFIES THE ORIGINAL VARIABLE TO FLIP THE ENTIRE THING I WANT TO KILL WHOEVER THOUGHT THAT WAS GOOD IDEA WHAT THE FUCK DID NOBODY
-    EVER THINK "what if someone needs to have an unflipped version and a flipped version in memory at the same time" LIKE A GODDAMN NORMAL PERSON
-    
-    ps. THEY EVEN WROTE IT WRONG IN THE DOCUMENTATION
-    
-    pps. i think i might be stupid
-    
-    ppps. ?????
-    
-    pppps. python stupid and do thing should not do 
-    
-i fixed it
-"""
