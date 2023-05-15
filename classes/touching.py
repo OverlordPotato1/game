@@ -27,31 +27,21 @@ class touching:
         else:
             return 0
 
-
-
-    def bottom(self, sprite):
-        entity_bottom = self.entity.rect.bottom
-        entity_top = self.entity.rect.top
-        entity_left = self.entity.rect.left + 30
-        entity_right = self.entity.rect.right - 10
-        sprite_bottom = sprite.rect.bottom
-        sprite_top = sprite.rect.top
-        sprite_left = sprite.rect.left + 20
-        sprite_right = sprite.rect.right - 32
-
-        # +x ------>
-        # +y /\
-
-        # check if lined up horizontally
-        if entity_left < sprite_left and entity_right > sprite_left or entity_left < sprite_right and entity_right > sprite_right: # it works idk how but it works so dont touch it
-            if sprite_top <= entity_bottom + 25 and sprite_top >= entity_bottom - 15:
+    def bottom(self, playerRect, spriteRect):
+        playerBottom = playerRect[0]
+        playerTop = playerRect[1]
+        playerLeft = playerRect[2]
+        playerRight = playerRect[3]
+        spriteBottom = spriteRect[0]
+        spriteTop = spriteRect[1]
+        spriteLeft = spriteRect[2]
+        spriteRight = spriteRect[3]
+        
+        if spriteLeft >= playerLeft and spriteLeft <= playerRight or spriteRight >= playerLeft and spriteRight <= playerRight:
+            if spriteTop < playerBottom and spriteBottom > playerBottom:
                 return 2
-            elif sprite_top <= entity_bottom + 30 and sprite_top >= entity_bottom - 20:
-                return 1
             else:
                 return 0
-        else:
-            return 0
 
     def left(self, sprite):
         entity_bottom = self.entity.rect.bottom

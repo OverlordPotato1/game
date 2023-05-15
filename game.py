@@ -9,10 +9,11 @@ from classes.json_handler import JsonFile
 from level_loader import level_loader
 from classes.sprite import Sprite
 from classes.touching import touching
+import random
 
 pygame.init()
 
-screen = pygame.display.set_mode((definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT))
+screen = pygame.display.set_mode((definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT), pygame.SRCALPHA)
 os.environ['SDL_VIDEO_CENTERED'] = '1'  # center the window
 
 world_width = 1000
@@ -186,31 +187,46 @@ while doTheThing:
     
     hittingHead = False
 
+    debug_surface = pygame.Surface((definitions.SCREEN_HEIGHT, definitions.SCREEN_WIDTH), pygame.SRCALPHA)
+
+    pygame.draw.rect(screen, (40, 0, 0, 20), (0, 0, (scroll_x + definitions.SCREEN_WIDTH/2) - 19, sh))
+
+    screen.blit(lvl_loader.surface, (0, 0), (-scroll_x, -scroll_y, sw, sh))
+
     if not noClip:
-        playerInSprite = False
-        cantPhaseThrough = False
+        player_bottom = playerSprite.rect.bottom + 20
+        player_top = playerSprite.rect.top + 25
+        player_left = playerSprite.rect.left + 45
+        player_right = playerSprite.rect.right - 25
+
+        player_height = player_bottom - player_top
+        player_width = player_right - player_left
+
+        pygame.draw.rect(debug_surface, (255, 0, 0), (player_left, player_top-15, 1, player_height+30)) # draw the left collision line
+        pygame.draw.rect(debug_surface, (0, 255, 0), (player_right, player_top-15, 1, player_height+30)) # draw the right collision line
+        pygame.draw.rect(debug_surface, (0, 0, 0), (player_left-15, player_top, player_width+30, 1)) # draw the top collision line
+        pygame.draw.rect(debug_surface, (255, 255, 255), (player_left-15, player_bottom, player_width+30, 1)) # draw the bottom collision line
+        pygame.draw.rect(debug_surface, (255, 255, 255, 64), (player_left, player_bottom, player_width, 15)) # draw the bottom box
+        pygame.draw.rect(debug_surface, (0, 0, 0, 64), (player_left, player_top-15, player_width, 15)) # draw the top box
+        pygame.draw.rect(debug_surface, (0, 255, 0, 64), (player_right, player_top, 15, player_height)) # draw the right box
+        pygame.draw.rect(debug_surface, (255, 0, 0, 64), (player_left-15, player_top, 15, player_height)) # draw the left box
 
         for sprite in player_collide_group:
-            player_bottom = playerSprite.rect.bottom + 30
-            player_top = playerSprite.rect.top
-            player_left = playerSprite.rect.left + 26
-            player_right = playerSprite.rect.right - 10
             sprite_bottom = sprite.rect.bottom
             sprite_top = sprite.rect.top
-            sprite_left = sprite.rect.left + 20
-            sprite_right = sprite.rect.right - 35
+            sprite_left = sprite.rect.left
+            sprite_right = sprite.rect.right
 
-            if player_right >= sprite_left and player_left <= sprite_right:
-                if player_bottom >= sprite_top and player_top <= sprite_bottom:
-                    playerInSprite = True
-                if (player_bottom - definitions.tile_size > sprite_top 
-                and player_bottom - definitions.tile_size*2 < sprite_top 
-                or player_bottom - definitions.tile_size > sprite_bottom 
-                and player_bottom - definitions.tile_size*2 < sprite_bottom):
-                    cantPhaseThrough = True
+            playerRect = [player_bottom, player_top, player_left, player_right]
+            spriteRect = [sprite_bottom, sprite_top, sprite_left, sprite_right]
+
+            sprite_width = sprite_right - sprite_left
+            sprite_height = sprite_bottom - sprite_top
+
+            pygame.draw.rect(screen, (random.randint(0, 255), 0, 0), (sprite_left, sprite_top, sprite_width, sprite_height))
 
             if onGround == False:
-                if playerTouching.bottom(sprite) == 2:
+                if playerTouching.bottom(playerRect, spriteRect) == 2:
                     if vel_y < 0:
                         onGround = True
                         vertical_overlap = sprite_top - player_bottom
@@ -218,30 +234,30 @@ while doTheThing:
                             # if something fucked up badly ignore it and let it fix itself
                             vertical_overlap = 0
                         if not down and vel_y != 0:
-                            scroll_y -= vertical_overlap + 14
-                elif playerTouching.bottom(sprite) == 1:
+                            scroll_y -= vertical_overlap
+                elif playerTouching.bottom(playerRect, spriteRect) == 1:
                     onGround = True
                 else:
                     onGround = False
                 if playerTouching.top(sprite) == 2:
-                    # vel_y = 0
-                    # hittingHead = True
-                    # vertical_overlap = sprite_bottom - player_top
-                    # if abs(vertical_overlap) > 50:
-                    #     # if something fucked up badly ignore it and let it fix itself
-                    #     vertical_overlap = 0
-                    # scroll_y -= vertical_overlap - 32
-                    pass
+                    vel_y = 0
+                    hittingHead = True
+                    vertical_overlap = sprite_bottom - player_top
+                    if abs(vertical_overlap) > 50:
+                        # if something fucked up badly ignore it and let it fix itself
+                        vertical_overlap = 0
+                    scroll_y -= vertical_overlap - 32
+                    # pass
                 elif playerTouching.top(sprite) == 1 and vel_y > 0:
-                    # vel_y *= 2
-                    pass
-                if not playerInSprite:
-                    if playerTouching.right(sprite) == 2:
-                        if vel_x < 0:
-                            vel_x = 0
-                    if playerTouching.left(sprite) == 2:
-                        if vel_x > 0:
-                            vel_x = 0
+                    vel_y *= 2
+                    # pass
+                # if not playerInSprite:
+                #     if playerTouching.right(sprite) == 2:
+                #         if vel_x < 0:
+                #             vel_x = 0
+                #     if playerTouching.left(sprite) == 2:
+                #         if vel_x > 0:
+                #             vel_x = 0
 
     justLanded = False
 
@@ -263,11 +279,11 @@ while doTheThing:
 
             onGround = False
 
-        if not onGround:
-            print(vel_x)
+        # if not onGround:
+            # print(scroll_y)
 
-        if down and not cantPhaseThrough:
-            vel_y = -20
+        # if down and not cantPhaseThrough:
+        #     vel_y = -20
             
 
         
@@ -289,8 +305,8 @@ while doTheThing:
         # if headHitTime > 0:
         #     vel_y = 0
 
-        if hittingHead:
-            vel_y = 10
+        # if hittingHead:
+        #     vel_y = 10
 
         scroll_y += vel_y
 
@@ -312,7 +328,9 @@ while doTheThing:
         scroll_y += vel_y
 
     # Draw the level surface
-    screen.blit(lvl_loader.surface, (0, 0), (-scroll_x, -scroll_y, sw, sh))
+    
+
+    screen.blit(debug_surface, (0, 0), (0, 0, definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT))
 
     screen.blit(world, ((sw/2)-(player_width/2), (sh/2)-(player_height/2)), (0, 0, sw, sh))
     
