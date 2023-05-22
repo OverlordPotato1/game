@@ -140,3 +140,15 @@ def is_left(playerRect, spriteRect):
 
     return playerLeft > spriteRight and vertically_alligned(playerRect, spriteRect)
     
+def drawCollisionLines(debug_surface, playerRect):
+    player_bottom = playerRect[0]
+    player_top = playerRect[1]
+    player_left = playerRect[2]
+    player_right = playerRect[3]
+    player_height = player_bottom - player_top
+    player_width = player_right - player_left
+
+    pygame.draw.rect(debug_surface, (255, 0, 0), (player_left, player_top-15, 1, player_height+30)) # draw the left collision line
+    pygame.draw.rect(debug_surface, (0, 255, 0), (player_right, player_top-15, 1, player_height+30)) # draw the right collision line
+    pygame.draw.rect(debug_surface, (0, 0, 0), (player_left-15, player_top, player_width+30, 1)) # draw the top collision line
+    pygame.draw.rect(debug_surface, (255, 255, 255), (player_left-15, player_bottom, player_width+30, 1)) # draw the bottom collision line

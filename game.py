@@ -208,12 +208,7 @@ while doTheThing:
         player_height = player_bottom - player_top
         player_width = player_right - player_left
 
-        pygame.draw.rect(debug_surface, (255, 0, 0), (player_left, player_top-15, 1, player_height+30)) # draw the left collision line
-        pygame.draw.rect(debug_surface, (0, 255, 0), (player_right, player_top-15, 1, player_height+30)) # draw the right collision line
-        pygame.draw.rect(debug_surface, (0, 0, 0), (player_left-15, player_top, player_width+30, 1)) # draw the top collision line
-        pygame.draw.rect(debug_surface, (255, 255, 255), (player_left-15, player_bottom, player_width+30, 1)) # draw the bottom collision line
-        # pygame.draw.rect(debug_surface, (0, 0, 0, 64), (player_left, player_top-15, player_width, 15)) # draw the top box
-        # pygame.draw.rect(debug_surface, (0, 255, 0, 64), (player_right, player_top, 15, player_height)) # draw the right box
+        func.drawCollisionLines(debug_surface, [player_bottom, player_top, player_left, player_right])
 
         alreadyHit = False        
 
@@ -251,8 +246,6 @@ while doTheThing:
 
             if topFlicker > 0:
                 pygame.draw.rect(debug_surface, (0, 0, 0, 200), (player_left, player_top-15, player_width, 15)) # draw the bottom box
-                # if vel_y < 0:
-                #     vel_y = 0
                 topFlicker -= 1
             else:
                 pygame.draw.rect(debug_surface, (0, 0, 0, 64), (player_left, player_top-15, player_width, 15)) # draw the bottom box
@@ -263,7 +256,6 @@ while doTheThing:
                 dist = font.render("{} px".format(distance), True, pygame.Color('white'))
                 screen.blit(dist, ((player_left+player_right)/2 + 5, (player_bottom+sprite_top)/2))
                 alreadyHit = True
-                # box it in because i dont know what im doing
                 pygame.draw.rect(debug_surface, (255, 0, 0), (sprite_left, sprite_top, sprite_width, 1))
                 pygame.draw.rect(debug_surface, (255, 0, 0), (sprite_left, sprite_bottom, sprite_width, 1))
                 pygame.draw.rect(debug_surface, (255, 0, 0), (sprite_left, sprite_top, 1, sprite_height))
