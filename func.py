@@ -79,3 +79,64 @@ def get_file_sha256(file_path):
             sha256_hash.update(chunk)
     
     return sha256_hash.hexdigest()
+
+def horizontally_aligned(playerRect, spriteRect):
+    playerBottom = playerRect[0]
+    playerTop = playerRect[1]
+    playerLeft = playerRect[2]
+    playerRight = playerRect[3]
+    spriteBottom = spriteRect[0]
+    spriteTop = spriteRect[1]
+    spriteLeft = spriteRect[2]
+    spriteRight = spriteRect[3]
+
+    return spriteLeft <= playerLeft <= spriteRight or spriteLeft <= playerRight <= spriteRight
+
+def vertically_alligned(playerRect, spriteRect):
+    playerBottom = playerRect[0]
+    playerTop = playerRect[1]
+    playerLeft = playerRect[2]
+    playerRight = playerRect[3]
+    spriteBottom = spriteRect[0]
+    spriteTop = spriteRect[1]
+    spriteLeft = spriteRect[2]
+    spriteRight = spriteRect[3]
+
+    return spriteTop >= playerTop and playerBottom >= spriteTop or spriteBottom >= playerTop and playerBottom >= spriteBottom
+
+def is_bellow(playerRect, spriteRect):
+    playerBottom = playerRect[0]
+    playerTop = playerRect[1]
+    playerLeft = playerRect[2]
+    playerRight = playerRect[3]
+    spriteBottom = spriteRect[0]
+    spriteTop = spriteRect[1]
+    spriteLeft = spriteRect[2]
+    spriteRight = spriteRect[3]
+
+    return playerBottom < spriteTop and horizontally_aligned(playerRect, spriteRect)
+
+def is_above(playerRect, spriteRect):
+    playerBottom = playerRect[0]
+    playerTop = playerRect[1]
+    playerLeft = playerRect[2]
+    playerRight = playerRect[3]
+    spriteBottom = spriteRect[0]
+    spriteTop = spriteRect[1]
+    spriteLeft = spriteRect[2]
+    spriteRight = spriteRect[3]
+
+    return playerTop > spriteBottom and horizontally_aligned(playerRect, spriteRect)
+
+def is_left(playerRect, spriteRect):
+    playerBottom = playerRect[0]
+    playerTop = playerRect[1]
+    playerLeft = playerRect[2]
+    playerRight = playerRect[3]
+    spriteBottom = spriteRect[0]
+    spriteTop = spriteRect[1]
+    spriteLeft = spriteRect[2]
+    spriteRight = spriteRect[3]
+
+    return playerLeft > spriteRight and vertically_alligned(playerRect, spriteRect)
+    
