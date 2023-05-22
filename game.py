@@ -292,7 +292,7 @@ while doTheThing:
                     bottomFlicker = 100
                 elif c(0):
                     onGround = False
-                c = switch(playerTouching.top(playerRect, spriteRect, vel_y, debug_surface))
+                c = switch(playerTouching.top(playerRect, spriteRect, vel_y))
                 if c(3):
                     if vel_y > 0:
                         vel_y = 0

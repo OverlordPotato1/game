@@ -6,7 +6,7 @@ class touching:
     def __init__(self, entity):
         self.entity = entity
 
-    def top(self, playerRect, spriteRect, vel_y, debug_surface):
+    def top(self, playerRect, spriteRect, vel_y):
         playerBottom = playerRect[0]
         playerTop = playerRect[1]
         playerLeft = playerRect[2]
@@ -18,11 +18,9 @@ class touching:
         half = (spriteTop+spriteBottom)/2
 
         if horizontally_aligned(playerRect, spriteRect):
-            pygame.draw.rect(debug_surface, (255, 0, 0, 150), (spriteLeft, spriteTop, spriteRight-spriteLeft, spriteBottom-spriteTop))
             if spriteBottom > playerTop and half < playerTop:
                 return 3
             elif is_above(playerRect, spriteRect) and playerTop + -vel_y*2 < spriteBottom:
-                pygame.draw.rect(debug_surface, (255, 0, 0, 150), (spriteLeft, spriteTop, spriteRight-spriteLeft, spriteBottom-spriteTop))
                 return 2
             elif spriteBottom <= playerTop and playerTop <= spriteBottom+2:
                 return 1
