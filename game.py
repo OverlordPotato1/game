@@ -12,6 +12,11 @@ from classes.touching import touching
 import random
 from classes.switch import switch
 import matplotlib.pyplot as plt
+import math
+
+
+import badIdeas
+import asyncio
 
 pygame.init()
 
@@ -195,108 +200,126 @@ while doTheThing:
     
     hittingHead = False
 
-    debug_surface = pygame.Surface((definitions.SCREEN_HEIGHT, definitions.SCREEN_WIDTH), pygame.SRCALPHA)
+    debug_surface = pygame.Surface((definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT), pygame.SRCALPHA)
 
     screen.blit(lvl_loader.surface, (0, 0), (scroll_x, -scroll_y, sw, sh))
 
-    if not noClip:
-        player_bottom = playerSprite.rect.bottom + 20
-        player_top = playerSprite.rect.top + 25
-        player_left = playerSprite.rect.left + 45
-        player_right = playerSprite.rect.right - 25
+    
+    surfaceThatIsCurrentlyBeingSmashedInto = []
 
-        player_height = player_bottom - player_top
-        player_width = player_right - player_left
+    player_bottom = playerSprite.rect.bottom + 20
+    player_top = playerSprite.rect.top + 25
+    player_left = playerSprite.rect.left + 45
+    player_right = playerSprite.rect.right - 25
 
-        func.drawCollisionLines(debug_surface, [player_bottom, player_top, player_left, player_right])
+    player_height = player_bottom - player_top
+    player_width = player_right - player_left
 
-        alreadyHit = False        
+    func.drawCollisionLines(debug_surface, [player_bottom, player_top, player_left, player_right])
 
-        for sprite in player_collide_group:
-            sprite_bottom = sprite.rect.bottom
-            sprite_top = sprite.rect.top
-            sprite_left = sprite.rect.left
-            sprite_right = sprite.rect.right
+    alreadyHit = False   
+    alreadyHitX = []
 
-            playerRect = [player_bottom, player_top, player_left, player_right]
-            spriteRect = [sprite_bottom, sprite_top, sprite_left, sprite_right]
+    for sprite in player_collide_group:
+        sprite_bottom = sprite.rect.bottom
+        sprite_top = sprite.rect.top
+        sprite_left = sprite.rect.left
+        sprite_right = sprite.rect.right
 
-            sprite_width = sprite_right - sprite_left
-            sprite_height = sprite_bottom - sprite_top
+        playerRect = [player_bottom, player_top, player_left, player_right]
+        spriteRect = [sprite_bottom, sprite_top, sprite_left, sprite_right]
 
-            if bottomFlicker > 0:
-                pygame.draw.rect(debug_surface, (255, 255, 255, 200), (player_left, player_bottom, player_width, 15)) # draw the bottom box
-                if vel_y < 0:
-                    vel_y = 0
-                bottomFlicker -= 1
+        sprite_width = sprite_right - sprite_left
+        sprite_height = sprite_bottom - sprite_top
+
+        if bottomFlicker > 0:
+            pygame.draw.rect(debug_surface, (255, 255, 255, 200), (player_left, player_bottom, player_width, 15)) # draw the bottom box
+            if vel_y < 0:
+                vel_y = 0
+            bottomFlicker -= 1
+        else:
+            pygame.draw.rect(debug_surface, (255, 255, 255, 64), (player_left, player_bottom, player_width, 15)) # draw the bottom box
+
+        if leftFlicker > 0:
+            pygame.draw.rect(debug_surface, (255, 0, 0, 200), (player_left-15, player_top, 15, player_height)) # draw the left box
+            leftFlicker -= 1
+        else:
+            pygame.draw.rect(debug_surface, (255, 0, 0, 64), (player_left-15, player_top, 15, player_height)) # draw the left box
+
+        if rightFlicker > 0:
+            pygame.draw.rect(debug_surface, (0, 255, 0, 200), (player_right, player_top, 15, player_height)) # draw the left box
+            rightFlicker -= 1
+        else:
+            pygame.draw.rect(debug_surface, (0, 255, 0, 64), (player_right, player_top, 15, player_height)) # draw the left box
+
+        if topFlicker > 0:
+            pygame.draw.rect(debug_surface, (0, 0, 0, 200), (player_left, player_top-15, player_width, 15)) # draw the bottom box
+            topFlicker -= 1
+        else:
+            pygame.draw.rect(debug_surface, (0, 0, 0, 64), (player_left, player_top-15, player_width, 15)) # draw the bottom box
+
+        if func.is_bellow([player_bottom - 1, player_top, player_left, player_right], spriteRect) and not ((sprite_left + scroll_x) in alreadyHitX):
+            distanceOffScreen = (player_bottom+sprite_top)/2 - definitions.SCREEN_HEIGHT
+            x = ((player_left + player_right)/2 + (sprite_left + sprite_right)/2)/2
+            pygame.draw.rect(debug_surface, (255,255,255), (x, player_bottom, 1, sprite_top-player_bottom))
+            distance = sprite_top-player_bottom
+            dist = font.render("{} px".format(distance), True, pygame.Color('white'))
+            if distanceOffScreen > 0:
+                debug_surface.blit(dist, (x + 5, definitions.SCREEN_HEIGHT - 15))
             else:
-                pygame.draw.rect(debug_surface, (255, 255, 255, 64), (player_left, player_bottom, player_width, 15)) # draw the bottom box
+                debug_surface.blit(dist, (x + 5, (player_bottom+sprite_top)/2))
 
-            if leftFlicker > 0:
-                pygame.draw.rect(debug_surface, (255, 0, 0, 200), (player_left-15, player_top, 15, player_height)) # draw the left box
-                leftFlicker -= 1
-            else:
-                pygame.draw.rect(debug_surface, (255, 0, 0, 64), (player_left-15, player_top, 15, player_height)) # draw the left box
-
-            if rightFlicker > 0:
-                pygame.draw.rect(debug_surface, (0, 255, 0, 200), (player_right, player_top, 15, player_height)) # draw the left box
-                rightFlicker -= 1
-            else:
-                pygame.draw.rect(debug_surface, (0, 255, 0, 64), (player_right, player_top, 15, player_height)) # draw the left box
-
-            if topFlicker > 0:
-                pygame.draw.rect(debug_surface, (0, 0, 0, 200), (player_left, player_top-15, player_width, 15)) # draw the bottom box
-                topFlicker -= 1
-            else:
-                pygame.draw.rect(debug_surface, (0, 0, 0, 64), (player_left, player_top-15, player_width, 15)) # draw the bottom box
-
-            if func.is_bellow([player_bottom - 1, player_top, player_left, player_right], spriteRect) and not alreadyHit:
-                pygame.draw.rect(debug_surface, (255,255,255), ((player_left+player_right)/2, player_bottom, 1, sprite_top-player_bottom))
-                distance = sprite_top-player_bottom
-                dist = font.render("{} px".format(distance), True, pygame.Color('white'))
-                screen.blit(dist, ((player_left+player_right)/2 + 5, (player_bottom+sprite_top)/2))
-                alreadyHit = True
-                pygame.draw.rect(debug_surface, (255, 0, 0), (sprite_left, sprite_top, sprite_width, 1))
-                pygame.draw.rect(debug_surface, (255, 0, 0), (sprite_left, sprite_bottom, sprite_width, 1))
-                pygame.draw.rect(debug_surface, (255, 0, 0), (sprite_left, sprite_top, 1, sprite_height))
-                pygame.draw.rect(debug_surface, (255, 0, 0), (sprite_right, sprite_top, 1, sprite_height))
-
-            if not onGround:
-                c = switch(playerTouching.bottom(playerRect, spriteRect, vel_y-1))
-                if c(3):
+            alreadyHit = True
+            alreadyHitX.append(sprite_left + scroll_x)
+            func.debugBox(debug_surface, spriteRect, (255, 0, 0), 5)
+            
+        if not onGround and not noClip:
+            c = switch(playerTouching.bottom(playerRect, spriteRect, vel_y-1))
+            if c(3):
+                if not noClip:
                     if vel_y < 0:
                         vel_y = 0
                     onGround = True
                     vertical_overlap = sprite_top - player_bottom
                     scroll_y -= vertical_overlap
-                    bottomFlicker = 100
-                elif c(2):
+                bottomFlicker = 100
+            elif c(2):
+                if not noClip:
                     if vel_y < 0:
                         vel_y = 0
                     vertical_overlap = sprite_top - player_bottom
                     scroll_y -= vertical_overlap
                     onGround = True
-                    bottomFlicker = 100
-                elif c(1):
+                bottomFlicker = 100
+            elif c(1):
+                if not noClip:
                     if vel_y < 0:
                         vel_y = 0
                     onGround = True
-                    bottomFlicker = 100
-                elif c(0):
+                bottomFlicker = 100
+            elif c(0):
+                if not noClip:
                     onGround = False
-                c = switch(playerTouching.top(playerRect, spriteRect, vel_y))
-                if c(3):
-                    if vel_y > 0:
-                        vel_y = 0
-                    vertical_overlap = sprite_bottom - player_top
-                    scroll_y -= vertical_overlap
-                    topFlicker = 100
-                elif c(2):
-                    if vel_y > 0:
-                        vel_y = 0
+            c = switch(playerTouching.top(playerRect, spriteRect, vel_y))
+            if c(3):
+                surfaceThatIsCurrentlyBeingSmashedInto.append(spriteRect)
+                if vel_y > 0:
+                    vel_y = 0
+                vertical_overlap = sprite_bottom - player_top
+                scroll_y -= vertical_overlap
+                topFlicker = 100
+            elif c(2):
+                surfaceThatIsCurrentlyBeingSmashedInto.append(spriteRect)
+                if vel_y > 0:
+                    vel_y = 0
 
-                    topFlicker = 100
+                topFlicker = 100
+        
+        if surfaceThatIsCurrentlyBeingSmashedInto:
+            for tile in surfaceThatIsCurrentlyBeingSmashedInto:
+                func.debugBox(debug_surface, tile, (255,255,255))
 
+        if not (surfaceThatIsCurrentlyBeingSmashedInto in spriteRect) and not noClip:
             c = switch(playerTouching.left(playerRect, spriteRect, vel_x))
             if c(2):
                 scroll_x += 5
@@ -309,7 +332,6 @@ while doTheThing:
                 # overlap = player_left - sprite_right
                 # vel_x= overlap
                 leftFlicker = 100
-                
             c = switch(playerTouching.right(playerRect, spriteRect, vel_x))
             if c(2):
                 scroll_x -= 5
@@ -320,6 +342,47 @@ while doTheThing:
                 if vel_x < 0:
                     vel_x = 0
                 rightFlicker = 100
+
+    for angle in range(-90+(playerWalk.facing*180), 90+(playerWalk.facing*180), 10):
+        dx = math.cos(math.radians(angle))
+        dy = math.sin(math.radians(angle))
+
+        hit = False
+
+        c = 0
+        for i in range(50, 500, 50):
+            c += 1
+            # if c % (-(40/100)*i+180) == 0:
+            x = playerSprite.rect.centerx + dx * i
+            y = playerSprite.rect.centery + dy * i
+
+            for sprite in player_collide_group:
+                if sprite.rect.collidepoint(x, y):
+                    # sprite.image.set_alpha(128)
+                    hit = True
+                    break
+            if hit:
+                break
+            
+            pygame.draw.rect(debug_surface, (255, 0, 0, 255), (x, y, 2, 2))
+
+            
+            # except:
+            #     x = playerSprite.rect.centerx + dx * i
+            #     y = playerSprite.rect.centery + dy * i
+            #     pygame.draw.rect(debug_surface, (255, 0, 0, 255), (x, y, 2, 2))
+
+            #     for sprite in player_collide_group:
+            #         if sprite.rect.collidepoint(x, y):
+            #             # sprite.image.set_alpha(128)
+            #             hit = True
+            #             break
+            #     if hit:
+            #         break
+                
+                
+
+    if not noClip:
 
         idk = 0
         if vel_y > 0:
@@ -333,17 +396,6 @@ while doTheThing:
 
     if onGround and not prevOnGround:
         justLanded = True
-        # if vel_y == 0:
-        #     plt.plot(yHist, label='Y Value')
-        #     plt.plot(velyHist, label='Y velocity')
-        #     plt.legend()
-        #     plt.show()
-        #     yHist = []
-        #     velyHist = []
-
-    # if not onGround:
-    #     yHist.append(scroll_y)
-    #     velyHist.append(vel_y)
 
     prevOnGround = onGround
     
@@ -384,12 +436,9 @@ while doTheThing:
         scroll_y += vel_y
 
     # Draw the level surface
-    pygame.draw.rect(screen, (40, 0, 0, 20), (0, 0, (-scroll_x + definitions.SCREEN_WIDTH/2) - 19, sh))    
 
-    screen.blit(debug_surface, (0, 0), (0, 0, definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT))
+    pygame.draw.rect(debug_surface, (40, 0, 0, 80), (0, 0, (-scroll_x + definitions.SCREEN_WIDTH/2) - 19, sh))   
 
-    screen.blit(world, ((sw/2)-(player_width/2), (sh/2)-(player_height/2)), (0, 0, sw, sh))
-    
     try:
         if frames % (int(clock.get_fps()/2)) == 0:
             current_fps = int(clock.get_fps())
@@ -397,8 +446,16 @@ while doTheThing:
         current_fps = 2147483647
 
     fps_text = font.render(f"FPS: {current_fps}     Scroll_x {scroll_x}     Scroll_y {scroll_y}     Vel_x {vel_x}     Vel_y {vel_y}", True, pygame.Color('white'))
+    debug_surface.blit(fps_text, (10, 10))
 
-    screen.blit(fps_text, (10, 10))
+    screen.blit(debug_surface, (0, 0), (0, 0, definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT))
+
+    screen.blit(world, ((sw/2)-(player_width/2), (sh/2)-(player_height/2)), (0, 0, sw, sh))
+    
+    
+
+    
+
 
     playerGroupBecauseIHaveNoClueWhatImDoing.draw(screen)
 

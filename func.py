@@ -152,3 +152,15 @@ def drawCollisionLines(debug_surface, playerRect):
     pygame.draw.rect(debug_surface, (0, 255, 0), (player_right, player_top-15, 1, player_height+30)) # draw the right collision line
     pygame.draw.rect(debug_surface, (0, 0, 0), (player_left-15, player_top, player_width+30, 1)) # draw the top collision line
     pygame.draw.rect(debug_surface, (255, 255, 255), (player_left-15, player_bottom, player_width+30, 1)) # draw the bottom collision line
+
+def debugBox(debug_surface, spriteRect, color, thickness = 2):
+    spriteBottom = spriteRect[0]
+    spriteTop = spriteRect[1]
+    spriteLeft = spriteRect[2]
+    spriteRight = spriteRect[3]
+    offset = thickness - 1
+
+    pygame.draw.rect(debug_surface, color, (spriteLeft, spriteTop, spriteRight-spriteLeft, thickness))
+    pygame.draw.rect(debug_surface, color, (spriteLeft, spriteTop, thickness, spriteBottom-spriteTop))
+    pygame.draw.rect(debug_surface, color, (spriteLeft, spriteBottom-offset, spriteRight-spriteLeft, thickness))
+    pygame.draw.rect(debug_surface, color, (spriteRight-offset, spriteTop, thickness, spriteBottom-spriteTop))

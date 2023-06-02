@@ -11,6 +11,7 @@ class Movement:
         self.last_direction = 0
         self.move_speed = move_speed
         self.flippedIdle = functions.flip_spritesheet(idle)
+        self.facing = 0
 
     def __call__(self, up, down, left, right, scroll_x, scroll_y):
         succeed = 0
@@ -38,12 +39,14 @@ class Movement:
             if self.last_direction != 1:
                 self.animation_class.switch_sheet(self.leftWalk)
                 self.last_direction = 1
+            self.facing = 1
             succeed += 1
         if right and not left:
             scroll_x -= ms
             if self.last_direction != 0:
                 self.animation_class.switch_sheet(self.rightWalk)
                 self.last_direction = 0
+            self.facing = 0
             succeed += 1
         if succeed == 0:
             if self.last_direction == 1:
