@@ -1,5 +1,6 @@
 {
   "null": {"path": "Images/Null.png", "collidable":  false, "name":  "Air"},
   "a": {"path": "Images/Downloaded/Fantasy Pixel Art Asset Pack/BasicGreenTiles/Dirt_1_16x16.png", "collidable": true, "name": "Dirt_1"},
-  "b": {"path": "Images/Downloaded/Fantasy Pixel Art Asset Pack/BasicGreenTiles/Green_1_16x16.png", "collidable": true, "name": "Green_1"}
+  "b": {"path": "Images/Downloaded/Fantasy Pixel Art Asset Pack/BasicGreenTiles/Green_1_16x16.png", "collidable": true, "name": "Green_1"},
+  "i": {"path": "Images/Null.png", "collidable": true, "name": "Barrier"}
 }

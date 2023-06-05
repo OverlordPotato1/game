@@ -1,6 +1,7 @@
 import pygame
 from classes.spritesheet import Spritesheet as spsh
 import hashlib
+from math import *
 
 
 def resize_sprites(spritesheet, dimensions):
@@ -164,3 +165,41 @@ def debugBox(debug_surface, spriteRect, color, thickness = 2):
     pygame.draw.rect(debug_surface, color, (spriteLeft, spriteTop, thickness, spriteBottom-spriteTop))
     pygame.draw.rect(debug_surface, color, (spriteLeft, spriteBottom-offset, spriteRight-spriteLeft, thickness))
     pygame.draw.rect(debug_surface, color, (spriteRight-offset, spriteTop, thickness, spriteBottom-spriteTop))
+
+import pygame
+
+def draw_line_with_collision(screen, start_pos, end_pos, player_collide_group):
+    x1 = start_pos[0]
+    x2 = end_pos[0]
+    y1 = start_pos[1]
+    y2 = end_pos[1]
+    delta_x = x2 - x1
+    delta_y = y2 - y1
+    angle_rad = atan2(delta_y, delta_x)
+    angle = degrees(angle_rad)
+    if angle < 0:
+        angle += 360
+
+    dist = sqrt(delta_x**2 + delta_y**2)
+    
+    dx = cos(radians(angle))
+    dy = sin(radians(angle))
+
+    hit = False
+
+    c = 0
+    for i in range(0, int(dist), int(dist/35)+1):
+        c += 1
+        x = start_pos[0] + dx * i
+        y = start_pos[1] + dy * i
+
+        for sprite in player_collide_group:
+            if sprite.rect.collidepoint(x, y):
+                hit = True
+                break
+        if hit:
+            break
+        
+        if c == 7:
+            pygame.draw.rect(screen, (255, 0, 0, 255), (x, y, 7, 7))  
+        c += 1
