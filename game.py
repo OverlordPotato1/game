@@ -332,7 +332,7 @@ while doTheThing:
     prevOnGround = onGround
     playerSprite.image = playerAnim()    
     
-    # touch this if statement and you disappear ↓
+    # touch this if statement and you die ↓
     if not noClip:
         if up and onGround and not lastJump > 0:
             lastJump = 30
@@ -379,7 +379,7 @@ while doTheThing:
     screen.blit(debug_surface, (0, 0), (0, 0, definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT))
     screen.blit(world, ((sw/2)-(player_width/2), (sh/2)-(player_height/2)), (0, 0, sw, sh))
     playerGroupBecauseIHaveNoClueWhatImDoing.draw(screen)
-    
+
     pygame.display.update()
     pygame.display.flip()
     clock.tick(fps)
