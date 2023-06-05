@@ -158,22 +158,15 @@ while doTheThing:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             doTheThing = False
-
-        # Update the states of the up down left right things
         up(event)
         down(event)
         left(event)
         right(event)
-
         v(event)
         k(event)
 
-    # Clear content from background
     screen.fill((100, 0, 140, 0))
     world.fill((0, 0, 0, 0))
-
-    
-    # Update the scrolling position based on the key flags
     noClip, prevV = func.handle_noClip(noClip, v, prevV, playerWalk)
 
     if k.single():
@@ -201,10 +194,7 @@ while doTheThing:
     hittingHead = False
 
     debug_surface = pygame.Surface((definitions.SCREEN_WIDTH, definitions.SCREEN_HEIGHT), pygame.SRCALPHA)
-
     screen.blit(lvl_loader.surface, (0, 0), (scroll_x, -scroll_y, sw, sh))
-
-    
     surfaceThatIsCurrentlyBeingSmashedInto = []
 
     player_bottom = playerSprite.rect.bottom + 20
@@ -314,7 +304,6 @@ while doTheThing:
                     vel_y = 0
 
                 topFlicker = 100
-        
         if surfaceThatIsCurrentlyBeingSmashedInto:
             for tile in surfaceThatIsCurrentlyBeingSmashedInto:
                 func.debugBox(debug_surface, tile, (255,255,255))
@@ -352,44 +341,24 @@ while doTheThing:
         c = 0
         for i in range(50, 500, 50):
             c += 1
-            # if c % (-(40/100)*i+180) == 0:
             x = playerSprite.rect.centerx + dx * i
             y = playerSprite.rect.centery + dy * i
 
             for sprite in player_collide_group:
                 if sprite.rect.collidepoint(x, y):
-                    # sprite.image.set_alpha(128)
                     hit = True
                     break
             if hit:
                 break
             
-            pygame.draw.rect(debug_surface, (255, 0, 0, 255), (x, y, 2, 2))
-
-            
-            # except:
-            #     x = playerSprite.rect.centerx + dx * i
-            #     y = playerSprite.rect.centery + dy * i
-            #     pygame.draw.rect(debug_surface, (255, 0, 0, 255), (x, y, 2, 2))
-
-            #     for sprite in player_collide_group:
-            #         if sprite.rect.collidepoint(x, y):
-            #             # sprite.image.set_alpha(128)
-            #             hit = True
-            #             break
-            #     if hit:
-            #         break
-                
-                
+            pygame.draw.rect(debug_surface, (255, 0, 0, 255), (x, y, 2, 2))       
 
     if not noClip:
-
         idk = 0
         if vel_y > 0:
             idk = vel_y**1.3
         else:
             idk = -(player_bottom - player_top)
-
         pygame.draw.rect(debug_surface, (221, 224, 16), ((player_left+player_right)/2, player_top-idk, 3, abs(vel_y)**1.3))
     
     justLanded = False
@@ -398,14 +367,12 @@ while doTheThing:
         justLanded = True
 
     prevOnGround = onGround
-    
     playerSprite.image = playerAnim()    
     
     if not noClip:
         if up and onGround and not lastJump > 0:
             lastJump = 30
             vel_y = 23
-
             onGround = False
         
         lastJump -= 1
@@ -435,15 +402,13 @@ while doTheThing:
         scroll_x -= vel_x
         scroll_y += vel_y
 
-    # Draw the level surface
-
-    pygame.draw.rect(debug_surface, (40, 0, 0, 80), (0, 0, (-scroll_x + definitions.SCREEN_WIDTH/2) - 19, sh))   
+    pygame.draw.rect(debug_surface, (40, 0, 0, 80), (0, 0, (-scroll_x + definitions.SCREEN_WIDTH/2) - 19, sh))
 
     try:
         if frames % (int(clock.get_fps()/2)) == 0:
             current_fps = int(clock.get_fps())
     except:
-        current_fps = 2147483647
+        current_fps = -1
 
     fps_text = font.render(f"FPS: {current_fps}     Scroll_x {scroll_x}     Scroll_y {scroll_y}     Vel_x {vel_x}     Vel_y {vel_y}", True, pygame.Color('white'))
     debug_surface.blit(fps_text, (10, 10))
